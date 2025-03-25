@@ -2,17 +2,17 @@ document.getElementById('fetch').onclick = async () => {
     // Generar un ID aleatorio entre 1 y 1025
     const randomId = Math.floor(Math.random() * 1025) + 1
     
-    // Obtener los datos del Pokemon mediante su ID
+    // Obtener los datos del pokemon mediante su ID
     const pokemonRespuesta = await fetch(`https://pokeapi.co/api/v2/pokemon/${randomId}`)
     const pokemon = await pokemonRespuesta.json()
     
-    // Obtener los datos de la especie del Pokemon
+    // Obtener los datos de la especie del pokemon
     const especieRespuesta = await fetch(pokemon.species.url)
     const especie = await especieRespuesta.json()
 
     // Por si quieren ver lo que devuelve
-    // console.log('pokemon: ', pokemon)
-    // console.log('especie: ', especie)
+     console.log('Pokemon: ', pokemon)
+     console.log('Especie: ', especie)
 
     document.getElementById('pokemon-imagen').src = pokemon.sprites.front_default
     
