@@ -1,0 +1,26 @@
+body {
+    font-family: Arial, sans-serif;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+#pokemon-container {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ddd;
+    padding: 15px;
+}
+
+#pokemon-imagen {
+    max-width: 200px;
+    margin-right: 20px;
+}
+
+#pokemon-info {
+    flex-grow: 1;
+}
+
+button {
+    margin-bottom: 15px;
+}
