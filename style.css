@@ -204,3 +204,7 @@ body {
         background-position: 200% 200%;
     }
 }
+
+.hologram a{
+    text-decoration: none;
+}
