@@ -1,29 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Guess the Pokemon</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pokemon</title>
+  <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-    <div class="loading-screen" id="loading-screen">
-        <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png" alt="Loading..." class="pokeball">
-        <div class="progress" id="loading-progress">Loading Pokemon data... 0%</div>
-    </div>
-    <div class="container">
-        <h1>Guess the Pokemon</h1>
-        <div class="search-container">
-            <div class="autocomplete-container">
-                <input type="text" id="pokemon-input" placeholder="Enter a Pokemon name..." autocomplete="off">
-                <div id="autocomplete-dropdown" class="autocomplete-dropdown"></div>
-            </div>
+  <div class="container">
+    <div class="card-wrapper">
+      <div class="card">Singleplayer</div>
+      <div class="hologram">
+        <a href="./singleplayer/index.html">
+        <div class="pokemon-background"></div>
+        <div class="hologram-content">
+          <div class="hologram-footer">
+            <div class="hologram-legendary">Singleplayer</div>
+            <div class="hologram-description">Play against yourself and try to guess the pokemon in less than 10 tries!</div>
+          </div>
         </div>
-        <div id="error-message" class="error-message"></div>
-        <div id="loading" class="loading"></div>
-        <div id="pokemon-list" class="pokemon-list"></div>
+        <div class="hologram-shine"></div>
+      </a>
+      </div>
     </div>
 
-    <script type="module" src="src/main.js"></script>
+    <div class="card-wrapper">
+      <div class="card">Multiplayer</div>
+      <div class="hologram">
+        <div class="pokemon-background"></div>
+        <div class="hologram-content">
+          <div class="hologram-footer">
+            <div class="hologram-legendary">Multiplayer</div>
+            <div class="hologram-description">Play against others and try to guess the pokemon in the fewest time possible!</div>
+          </div>
+        </div>
+        <div class="hologram-shine"></div>
+      </div>
+    </div>
+  </div>
 </body>
+
 </html>

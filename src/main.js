@@ -1,8 +1,8 @@
 // Main entry point that imports and initializes all modules
-import { fetchAllPokemon, fetchPokemonData } from './api.js';
-import { initializeAutocomplete } from './autocomplete.js';
-import { createPokemonCard } from './ui.js';
-import { animatePokemonCard } from './animations.js';
+import { fetchAllPokemon, fetchPokemonData } from './api.js'
+import { initializeAutocomplete } from './autocomplete.js'
+import { createPokemonCard } from './ui.js'
+import { animatePokemonCard } from './animations.js'
 
 document.addEventListener('DOMContentLoaded', () => {
     const input = document.getElementById('pokemon-input')
@@ -18,16 +18,16 @@ document.addEventListener('DOMContentLoaded', () => {
     // Inicializa la aplicacion
     async function initializeApp() {
         // Carga todos los Pokemon
-        pokemonList = await fetchAllPokemon(loadingProgress);
+        pokemonList = await fetchAllPokemon(loadingProgress)
         
         // Ocultar la pantalla de carga
-        loadingScreen.style.display = 'none';
+        loadingScreen.style.display = 'none'
         
         // Inicializa el autocompletado
-        initializeAutocomplete(input, dropdown, pokemonList);
+        initializeAutocomplete(input, dropdown, pokemonList)
         
         // Configura el evento para buscar Pokemon
-        setupPokemonSearch();
+        setupPokemonSearch()
     }
 
     // Configura el evento para buscar Pokemon
@@ -61,5 +61,5 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Inicia la aplicacion
-    initializeApp();
-});
+    initializeApp()
+})
