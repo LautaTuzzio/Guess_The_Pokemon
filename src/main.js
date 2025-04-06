@@ -1,4 +1,4 @@
-// Main entry point that imports and initializes all modules
+// Punto de entrada principal para importar e inicializar los modulos
 import { fetchAllPokemon, fetchPokemonData } from './api.js'
 import { initializeAutocomplete } from './autocomplete.js'
 import { createPokemonCard } from './ui.js'

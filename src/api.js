@@ -1,4 +1,4 @@
-import { getGenerationNumber } from './utils.js';
+import { getGenerationNumber } from './utils.js'
 
 // Fetch de todos los pokemons y pre-cargar las imagenes
 async function fetchAllPokemon(loadingProgress) {
@@ -126,4 +126,4 @@ async function determineEvolutionStage(speciesData) {
     }
 }
 
-export { fetchAllPokemon, fetchPokemonData, determineEvolutionStage };
+export { fetchAllPokemon, fetchPokemonData, determineEvolutionStage }

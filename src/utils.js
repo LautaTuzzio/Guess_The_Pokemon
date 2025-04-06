@@ -21,4 +21,4 @@ function getTextColorClass(backgroundColor) {
     return darkColors.includes(backgroundColor) ? 'text-white' : 'text-black'
 }
 
-export { darkColors, getGenerationNumber, getTextColorClass };
+export { darkColors, getGenerationNumber, getTextColorClass }

@@ -62,8 +62,33 @@ function initializeAutocomplete(input, dropdown, pokemonList) {
     // Maneja la navegacion por teclado
     input.addEventListener('keydown', (e) => {
         const items = dropdown.getElementsByClassName('autocomplete-item')
+        
+        if (e.key === 'Enter') {
+            e.preventDefault()
+            
+            // Si hay un elemento seleccionado en el dropdown, usa ese valor
+            if (items.length > 0 && selectedIndex >= 0) {
+                const selectedItem = items[selectedIndex].querySelector('span')
+                input.value = selectedItem.textContent.toLowerCase()
+            }
+            
+            // Oculta el dropdown y dispara el evento de búsqueda
+            dropdown.style.display = 'none'
+            
+            // Trigger de busqueda del pokemon
+            const event = new KeyboardEvent('keypress', { key: 'Enter' })
+            input.dispatchEvent(event)
+            
+            // Limpia el input después de la búsqueda
+            setTimeout(() => {
+                input.value = ''
+            }, 100)
+            
+            return
+        }
+        
         if (items.length === 0) return
-
+        
         if (e.key === 'ArrowDown') {
             e.preventDefault()
             selectedIndex = (selectedIndex + 1) % items.length
@@ -72,15 +97,6 @@ function initializeAutocomplete(input, dropdown, pokemonList) {
             e.preventDefault()
             selectedIndex = selectedIndex <= 0 ? items.length - 1 : selectedIndex - 1
             updateSelection(items, selectedIndex)
-        } else if (e.key === 'Enter' && selectedIndex >= 0) {
-            e.preventDefault()
-            const selectedItem = items[selectedIndex].querySelector('span')
-            input.value = selectedItem.textContent.toLowerCase()
-            dropdown.style.display = 'none'
-            // Trigger de busqueda del pokemon
-            const event = new KeyboardEvent('keypress', { key: 'Enter' })
-            input.dispatchEvent(event)
-            return
         }
     })
 

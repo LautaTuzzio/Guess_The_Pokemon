@@ -1,6 +1,6 @@
 // Aplica animaciones a la tarjeta de Pokemon
 function animatePokemonCard(cardElements) {
-    const { intro, imageContainer, infoContainer } = cardElements;
+    const { intro, imageContainer, infoContainer } = cardElements
     
     // Muestra la intro con animacion
     setTimeout(() => {
@@ -27,4 +27,4 @@ function animatePokemonCard(cardElements) {
     }, 1000)
 }
 
-export { animatePokemonCard };
+export { animatePokemonCard }

@@ -1,4 +1,4 @@
-import { getTextColorClass } from './utils.js';
+import { getTextColorClass } from './utils.js'
 
 // Crea y agrega la tarjeta del pokemon a la lista con animacion
 function createPokemonCard(pokemon, pokemonListContainer) {
@@ -68,7 +68,7 @@ function createPokemonCard(pokemon, pokemonListContainer) {
     pokemonListContainer.insertBefore(card, pokemonListContainer.firstChild)
     
     // Retorna los elementos para las animaciones
-    return { card, intro, imageContainer, infoContainer };
+    return { card, intro, imageContainer, infoContainer }
 }
 
-export { createPokemonCard };
+export { createPokemonCard }
