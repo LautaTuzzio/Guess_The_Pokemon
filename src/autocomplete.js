@@ -11,7 +11,7 @@ function updateSelection(items, selectedIndex) {
 
 // Inicializa el autocompletado
 function initializeAutocomplete(input, dropdown, pokemonList) {
-    let selectedIndex = -1;
+    let selectedIndex = -1
 
     // Maneja los cambios de entrada para el autocompletado
     input.addEventListener('input', async () => {
@@ -108,4 +108,4 @@ function initializeAutocomplete(input, dropdown, pokemonList) {
     })
 }
 
-export { initializeAutocomplete, updateSelection };
+export { initializeAutocomplete, updateSelection }
