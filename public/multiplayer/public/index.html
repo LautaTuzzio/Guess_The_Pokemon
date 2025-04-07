@@ -4,14 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Room Chat System</title>
-  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
   <h1>Room Chat System</h1>
   <p>Your client ID: <span id="clientId">Connecting...</span></p>
   
   <div class="container">
-    <!-- Initial screen with create/join options -->
     <div id="lobbyScreen" class="card">
       <h2>Welcome to the Lobby</h2>
       <p>Create a new room or join an existing one:</p>
@@ -22,7 +21,6 @@
       </div>
     </div>
     
-    <!-- Room screen (initially hidden) -->
     <div id="roomScreen" class="card hidden">
       <h2>Room: <span id="roomId">Loading...</span></h2>
       <p id="roomMembers">Members: Loading...</p>
@@ -34,7 +32,6 @@
       <div id="messages"></div>
     </div>
 
-    <!-- Game screen (initially hidden) -->
     <div id="gameScreen" class="card hidden">
       <h2>Game Room: <span id="gameRoomId">Loading...</span></h2>
       <div class="pokemon-card">
@@ -45,6 +42,6 @@
   </div>
 
   <script src="/socket.io/socket.io.js"></script>
-  <script src="/script.js"></script>
+  <script src="./script.js"></script>
 </body>
 </html>
