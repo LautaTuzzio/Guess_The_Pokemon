@@ -8,7 +8,8 @@
 - Add a "go back" button
 
 ## Multiplayer TODO:
-- Fix routes
-- Join server.js (check)
 - Implement multiplayer onto the game
+
+# General notes:
+- For scripting, use /public/src, reuse the modules for optimal usage
 
