@@ -7,10 +7,13 @@
   <link rel="stylesheet" href="style.css">
 </head>
 
-<body>
+<div class="pokemon-columns" id="pokemonColumns"></div>
+<body id="body">
+  <header>¡ Guess The Pokemon !</header>
   <div class="container">
-    <div class="card-wrapper">
-      <div class="card">Singleplayer</div>
+    <div class="card-wrapper" id="container-1">
+      <div class="card">
+        <span>Singleplayer</span></div>
       <a href="./singleplayer/index.html">
       <div class="hologram">
         <div class="pokemon-background"></div>
@@ -25,8 +28,10 @@
       </div>
     </div>
 
-    <div class="card-wrapper">
-      <div class="card">Multiplayer</div>
+    <div class="card-wrapper" id="container-2">
+      <div class="card">
+        <span>Multiplayer</span>  
+      </div>
       <a href="./multiplayer/index.html">
       <div class="hologram">
         <div class="pokemon-background"></div>
@@ -42,5 +47,55 @@
     </div>
   </div>
 </body>
+
+<script>
+const body = document.getElementById("body")
+const columnsContainer = document.getElementById("pokemonColumns")
+
+const numberOfColumns = Math.floor(window.innerWidth / 150)
+const screenHeight = window.innerHeight
+const spriteHeight = 96 + 8
+const pokemonPerColumn = Math.ceil((screenHeight * 2) / spriteHeight)
+
+const getRandomPokemonId = () => Math.floor(Math.random() * 1025) + 1
+
+async function createPokemonSprite(pokemonId) {
+    const sprite = document.createElement('img')
+    sprite.className = 'pokemon-sprite'
+    sprite.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemonId}.png`
+    return sprite
+}
+
+async function createPokemonColumn() {
+    const column = document.createElement('div')
+    column.className = 'pokemon-column'
+    
+    const sprites = []
+    for (let i = 0; i < pokemonPerColumn; i++) {
+        const pokemonId = getRandomPokemonId()
+        const sprite = await createPokemonSprite(pokemonId)
+        sprites.push(sprite)
+    }
+    
+    sprites.forEach(sprite => {
+        column.appendChild(sprite)
+    })
+    sprites.forEach(sprite => {
+        column.appendChild(sprite.cloneNode(true))
+    })
+    
+    return column
+}
+
+async function initializeColumns() {
+    for (let i = 0; i < numberOfColumns; i++) {
+        const column = await createPokemonColumn()
+        columnsContainer.appendChild(column)
+    }
+}
+
+initializeColumns();
+
+</script>
 
 </html>

@@ -1,15 +1,38 @@
+
+
 body {
     font-family: Arial, sans-serif;
     display: flex;
     justify-content: center;
+    flex-direction: column;
     align-items: center;
     min-height: 100vh;
-    background: #f0f0f0;
+}
+
+@font-face {
+    font-family: 'Pokemon';
+    src: url('./assets/font/Pokemon.ttf') format('truetype');
+}
+
+header{
+    width: 100%;
+    color: white;
+    text-align: center;
+    font-family: 'Pokemon';
+    font-size: 40px;
+    transform: translateY(-30vh);
+    color: #fec017;
+    -webkit-text-stroke-width: 2px;
+    -webkit-text-stroke-color: #364067;
+    letter-spacing: 5px;
 }
 
 .container {
     display: flex;
+    flex-direction: row;
     gap: 40px;
+    transform: translateY(-5vh);
+
 }
 
 .card-wrapper {
@@ -18,6 +41,7 @@ body {
 }
 
 .card {
+    font-family: 'Pokemon';
     position: relative;
     width: 200px;
     height: 300px;
@@ -26,11 +50,20 @@ body {
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
     display: flex;
     justify-content: center;
+    text-align: center;
     align-items: center;
-    color: white;
+    color: #fec017;
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: #364067;
+    letter-spacing: 5px;
     font-weight: bold;
-    font-size: 24px;
+    font-size: 25px;
     transition: all 0.6s ease;
+}
+
+.card span{
+    text-align: center;
+    transform: translateX(4px);
 }
 
 .card-wrapper:hover .card {
@@ -133,11 +166,11 @@ body {
 }
 
 .card-wrapper:first-child .pokemon-background {
-    background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS76k4zz1RKWqTPUc13K1wxOMvqDCzGy0UfoA&s');
+    background-image: url('./assets/images/singleplayer.webp');
 }
 
 .card-wrapper:last-child .pokemon-background {
-    background-image: url('https://wallpapercat.com/w/full/8/8/0/885714-2018x2790-samsung-hd-kyogre-background-photo.jpg');
+    background-image: url('./assets/images/multiplayer.webp');
 }
 
 .hologram-content {
@@ -207,4 +240,41 @@ body {
 
 .hologram a{
     text-decoration: none;
+}
+
+.pokemon-columns {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    display: flex;
+    justify-content: space-around;
+    overflow: hidden;
+    background: white;
+    }
+
+.pokemon-column {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    animation: moveUpDown 40s linear infinite;
+    will-change: transform;
+}
+
+.pokemon-column:nth-child(even) {
+    animation-direction: reverse;
+}
+
+.pokemon-sprite {
+    width: 96px;
+    height: 96px;
+    opacity: 0.3;
+    flex-shrink: 0;
+}
+
+@keyframes moveUpDown {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-50%); }
 }
