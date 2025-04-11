@@ -3,10 +3,9 @@ async function getRandomPokemon() {
     const randomId = Math.floor(Math.random() * maxPokemon) + 1;
 
     try {
-      const [pokemonRes, speciesRes, encountersRes] = await Promise.all([
+      const [pokemonRes, speciesRes] = await Promise.all([
         fetch(`https://pokeapi.co/api/v2/pokemon/${randomId}`),
-        fetch(`https://pokeapi.co/api/v2/pokemon-species/${randomId}`),
-        fetch(`https://pokeapi.co/api/v2/pokemon/${randomId}/encounters`)
+        fetch(`https://pokeapi.co/api/v2/pokemon-species/${randomId}`)
       ]);
 
       if (!pokemonRes.ok || !speciesRes.ok || !encountersRes.ok) {
@@ -15,7 +14,6 @@ async function getRandomPokemon() {
 
       const pokemonData = await pokemonRes.json();
       const speciesData = await speciesRes.json();
-      const encountersData = await encountersRes.json();
 
       // Tipos
       const type1 = pokemonData.types[0]?.type.name || "Desconocido";
