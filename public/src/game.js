@@ -49,21 +49,19 @@ async function getRandomPokemon() {
   }
 }
 
-const input = document.getElementById('pokemon-input');
-input.addEventListener('keypress', (event) => { 
+const input = document.getElementById('pokemon-input')
+input.addEventListener('keypress', async (event) => { //faltaba este async
   if (event.key === 'Enter') { 
-    const pokemonName = input.value.trim().toLowerCase();
-    let pokeinfo  = fetchPokemonData(pokemonName)
-    console.log(pokeinfo)
+    const pokemonName = input.value.trim().toLowerCase()
     try {
-      console.log("sasasa", pokeinfo.name)
+      const pokeinfo = await fetchPokemonData(pokemonName) //faltaba este await
+      console.log(pokeinfo)
+      console.log("Nombre:", pokeinfo.name)
     } catch(error){
-        throw error
+      console.error("Error:", error)
     }
-    
   }
-
-});
+})
 
 let pokemonInfo = [];
 
