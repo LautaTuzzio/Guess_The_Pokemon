@@ -4,7 +4,7 @@ import { getGenerationNumber } from './utils.js'
 async function fetchAllPokemon(loadingProgress) {
     try {
         // Primero fetch de todos los pokemons
-        const response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=1025  ')
+        const response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=1025')
         const data = await response.json()
         const total = data.results.length
         let loaded = 0
@@ -70,7 +70,7 @@ async function fetchPokemonData(pokemonName) {
         return {
             id: pokemonData.id,
             name: pokemonData.name,
-            sprite: pokemonData.sprites.front_default,
+            sprite: pokemonData.sprites.front_default, 
             types: pokemonData.types.map(t => t.type.name),
             height: pokemonData.height / 10, // Convert to meters
             weight: pokemonData.weight / 10, // Convert to kg
@@ -80,7 +80,7 @@ async function fetchPokemonData(pokemonName) {
             generation: getGenerationNumber(speciesData.generation.name)
         }
     } catch (error) {
-        throw error
+         throw error
     }
 }
 

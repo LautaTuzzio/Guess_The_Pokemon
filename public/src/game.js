@@ -1,7 +1,8 @@
+import { fetchPokemonData } from './api.js'
+
 async function getRandomPokemon() {
   const maxPokemon = 1025;
   const randomId = Math.floor(Math.random() * maxPokemon) + 1;
-  console.log("we're here")
 
   try {
     const [pokemonRes, speciesRes] = await Promise.all([
@@ -25,13 +26,11 @@ async function getRandomPokemon() {
 
     // Generación
     const generation = speciesData.generation?.name.replace("generation-", "Generación ").toUpperCase();
-    
 
-    // Mostrar en pantalla
-    console.log("we're here 2")
+
+ 
 
     const card = document.getElementById('pokemon-card');
-    console.log("we're here 3")
 
     return [
       pokemonData.name,
@@ -42,22 +41,47 @@ async function getRandomPokemon() {
       speciesData.generation,
       pokemonData.height,
       pokemonData.weight
-    ];      
+    ];
 
 
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
 }
+
+const input = document.getElementById('pokemon-input');
+input.addEventListener('keypress', (event) => { 
+  if (event.key === 'Enter') { 
+    const pokemonName = input.value.trim().toLowerCase();
+    let pokeinfo  = fetchPokemonData(pokemonName)
+    console.log(pokeinfo)
+    try {
+      console.log("sasasa", pokeinfo.name)
+    } catch(error){
+        throw error
+    }
+    
+  }
+
+});
 
 let pokemonInfo = [];
 
 window.onload = async function() {
   pokemonInfo = await getRandomPokemon();
-  console.log("Datos del Pokémon aleatorio:", pokemonInfo);
+  console.log("Datos del Pokémon aleatorio:", pokemonInfo[0]);
+  // Aquí podrías mostrar la información del Pokémon aleatorio en la tarjeta
+  const card = document.getElementById('pokemon-card');
+  if (card && pokemonInfo.length > 0) {
+    card.innerHTML = `
+      <h2>${pokemonInfo[0]}</h2>
+      <img src="${pokemonInfo[1]}" alt="${pokemonInfo[0]}">
+      <p>Tipo 1: ${pokemonInfo[2]}</p>
+      <p>Tipo 2: ${pokemonInfo[3]}</p>
+      <p>Color: ${pokemonInfo[4]?.name || pokemonInfo[4] || 'Desconocido'}</p>
+      <p>Generación: ${pokemonInfo[5]?.name?.replace("generation-", "Generación ").toUpperCase() || pokemonInfo[5] || 'Desconocido'}</p>
+      <p>Altura: ${pokemonInfo[6] / 10} m</p>
+      <p>Peso: ${pokemonInfo[7] / 10} kg</p>
+    `;
+  }
 };
-
-
-
-
-
