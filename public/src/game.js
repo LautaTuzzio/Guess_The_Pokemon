@@ -17,6 +17,30 @@ async function getRandomPokemon() {
     const pokemonData = await pokemonRes.json();
     const speciesData = await speciesRes.json();
 
+    // Obtener la cadena evolutiva
+    const evolutionRes = await fetch(speciesData.evolution_chain.url);
+    if (!evolutionRes.ok) {
+      throw new Error("Error al obtener la cadena evolutiva");
+    }
+    const evolutionData = await evolutionRes.json();
+
+    // Calcular el evolution stage
+    let evolutionStage = 1;
+    let evoChain = evolutionData.chain;
+    
+    // Buscar el Pokémon en la cadena evolutiva
+    while (evoChain) {
+      if (evoChain.species.name === pokemonData.name) {
+        break;
+      }
+      if (evoChain.evolves_to.length > 0) {
+        evolutionStage++;
+        evoChain = evoChain.evolves_to[0];
+      } else {
+        break;
+      }
+    }
+
     // Tipos
     const type1 = pokemonData.types[0]?.type.name || "Desconocido";
     const type2 = pokemonData.types[1]?.type.name || "Ninguno";
@@ -27,8 +51,8 @@ async function getRandomPokemon() {
     // Generación
     const generation = speciesData.generation?.name.replace("generation-", "Generación ").toUpperCase();
 
-
- 
+    // Habitat
+    const habitat = speciesData.habitat?.name || "unknown";
 
     const card = document.getElementById('pokemon-card');
 
@@ -40,7 +64,9 @@ async function getRandomPokemon() {
       speciesData.color,
       speciesData.generation,
       pokemonData.height,
-      pokemonData.weight
+      pokemonData.weight,
+      habitat,
+      evolutionStage
     ];
 
 
@@ -48,6 +74,7 @@ async function getRandomPokemon() {
     console.log(error);
   }
 }
+
 //Funcion para sacar el numero romano y devolverlo como decimal
 function decimal(obj) {
   const equivalencias = {
@@ -61,56 +88,108 @@ function decimal(obj) {
     VIII: 8,
     IX: 9
   };
+  if (!obj || !obj.name) return null;
   let nombre = obj.name.trim().replace(/generation-/i, "").trim();
   return equivalencias[nombre.toUpperCase()] || null;
 }
 
-function comparar(pokemonRandom, pokeInfo){
-  console.log(pokemonRandom)
-  console.log(pokeInfo)
 
+//Funcion para comparar los datos del pokemon aleatorio con los del pokemon ingresado
+function comparar(pokemonRandom, pokeInfo){
   //Check de victoria
   if(pokemonRandom[0] === pokeInfo.name ){
     console.log("ganaste!!")
   }
   //comparacion de tipos
   if (pokemonRandom[2] === pokeInfo.types[0]){
-    console.log("tipo 1 igual")
+    setTimeout(() => {
+      const type1 = document.getElementById("type1");
+      if (type1) {
+        type1.style.backgroundColor = 'black';
+      }
+    }, 100);
   }
+
   //revisa si existe segundo tipo
   if(!pokeInfo.types[1]){
     pokeInfo.types[1] = "Ninguno"
   }
+  
+  //comparacion de tipo 2
   if (pokemonRandom[3] === pokeInfo.types[1]){
-    console.log("tipo 2 igual")
+    setTimeout(() => {
+      const type2 = document.getElementById("type2");
+      if (type2) {
+        type2.style.backgroundColor = 'black';
+      }
+    }, 100);
   }
 
-  if (pokemonRandom[4] === pokeInfo.color){
-    console.log("color igual")
+  //comparacion de color
+  if (pokemonRandom[4].name === pokeInfo.color){
+    setTimeout(() => {
+      const color = document.getElementById("color");
+      if (color) {
+        color.style.backgroundColor = 'black';
+      }
+    }, 100);
   }
 
   //convierto de numeros romanos a decimales
-  pokemonRandom[5]=decimal(pokemonRandom[5])
-
-  if (pokemonRandom[5] === pokeInfo.generation){
-    console.log("generacion igual")
+  const randomGeneration = decimal(pokemonRandom[5]);
+  
+  if (randomGeneration === pokeInfo.generation){
+    setTimeout(() => {
+      const generation = document.getElementById("generation");
+      if (generation) {
+        generation.style.backgroundColor = 'black';
+      }
+    }, 100);
   }
   //reviso si la altura y el peso son iguales
   if(pokemonRandom[6]/10 === pokeInfo.height){
-    console.log("altura igual")
+    setTimeout(() => {
+      const height = document.getElementById("height");
+      if (height) {
+        height.style.backgroundColor = 'black';
+      }
+    }, 100);
   }
   
   if(pokemonRandom[7]/10 === pokeInfo.weight){
-    console.log("peso igual")
+    setTimeout(() => {
+      const weight = document.getElementById("weight");
+      if (weight) {
+        weight.style.backgroundColor = 'black';
+      }
+    }, 100);
+  }
+  if(pokemonRandom[8] === pokeInfo.habitat){
+    setTimeout(() => {
+      const habitat = document.getElementById("habitat");
+      if (habitat) {
+        habitat.style.backgroundColor = 'black';
+      }
+    }, 100);
+  }
+
+  if(pokemonRandom[9] === pokeInfo.evolutionStage){
+    setTimeout(() => {
+      const evolutionStage = document.getElementById("evolutionStage");
+      if (evolutionStage) {
+        evolutionStage.style.backgroundColor = 'black';
+      }
+    }, 100);
   }
 }
 
 const input = document.getElementById('pokemon-input')
 input.addEventListener('keypress', async (event) => { 
   if (event.key === 'Enter') { 
-    const pokemonName = input.value.trim().toLowerCase()
+    var pokemonName = input.value.trim().toLowerCase()
     try {
-      const pokeinfo = await fetchPokemonData(pokemonName) 
+      const pokeinfo = await fetchPokemonData(pokemonName)
+      pokemonName=""
       comparar(pokemonInfo, pokeinfo)
     } catch(error){
       console.error("Error:", error)
@@ -133,8 +212,10 @@ window.onload = async function() {
       <p>Tipo 2: ${pokemonInfo[3]}</p>
       <p>Color: ${pokemonInfo[4]?.name || pokemonInfo[4] || 'Desconocido'}</p>
       <p>Generación: ${pokemonInfo[5]?.name?.replace("generation-", "Generación ").toUpperCase() || pokemonInfo[5] || 'Desconocido'}</p>
+      <p>Habitat: ${pokemonInfo[8] || 'Desconocido'}</p>
       <p>Altura: ${pokemonInfo[6] / 10} m</p>
       <p>Peso: ${pokemonInfo[7] / 10} kg</p>
+      <p>Etapa de evolución: ${pokemonInfo[9]}</p>
     `;
   }
 };

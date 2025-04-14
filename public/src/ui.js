@@ -38,20 +38,23 @@ function createPokemonCard(pokemon, pokemonListContainer) {
     
     // Define todas las celdas
     const cells = [
-        { class: `type-cell ${type1}`, text: type1.charAt(0).toUpperCase() + type1.slice(1) },
-        { class: `type-cell ${type2}`, text: type2 !== 'none' ? type2.charAt(0).toUpperCase() + type2.slice(1) : 'None' },
-        { class: pokemon.habitat, text: pokemon.habitat.charAt(0).toUpperCase() + pokemon.habitat.slice(1) },
-        { class: pokemon.color, text: pokemon.color.charAt(0).toUpperCase() + pokemon.color.slice(1) },
-        { class: 'evolution-stage', text: `Stage ${pokemon.evolutionStage}` },
-        { class: 'height', text: `${pokemon.height}m` },
-        { class: 'weight', text: `${pokemon.weight}kg` },
-        { class: 'generation', text: `Gen ${pokemon.generation}` },
+        { class: `type-cell ${type1}`,id: 'type1', text: type1.charAt(0).toUpperCase() + type1.slice(1) },
+        { class: `type-cell ${type2}`,id: 'type2', text: type2 !== 'none' ? type2.charAt(0).toUpperCase() + type2.slice(1) : 'None' },
+        { class: pokemon.habitat, id: 'habitat', text: pokemon.habitat.charAt(0).toUpperCase() + pokemon.habitat.slice(1) },
+        { class: pokemon.color, id: 'color', text: pokemon.color.charAt(0).toUpperCase() + pokemon.color.slice(1) },
+        { class: 'evolution-stage', id: 'evolutionStage', text: `Stage ${pokemon.evolutionStage}` },
+        { class: 'height', id: 'height', text: `${pokemon.height}m` },
+        { class: 'weight', id: 'weight', text: `${pokemon.weight}kg` },
+        { class: 'generation', id: 'generation', text: `Gen ${pokemon.generation}` },
     ]
     
     // Agrega todas las celdas al contenedor de la info
     cells.forEach(cell => {
         const div = document.createElement('div')
         div.className = `info-cell ${cell.class}`
+        if (cell.id) {
+            div.id = cell.id
+        }
         div.textContent = cell.text
         infoContainer.appendChild(div)
     })
