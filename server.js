@@ -11,19 +11,19 @@ const io = socketIo(server)
 // Track rooms and their members
 const rooms = {}
 
-// Serve static files from the public directory
-app.use(express.static(path.join(__dirname, 'public')))
+// Serve static files from the root directory
+app.use(express.static(path.join(__dirname)))
 
 // Route for the home page
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'))
+  res.sendFile(path.join(__dirname, 'index.html'))
 })
 
 // Route for game room
 app.get('/room/:roomId', (req, res) => {
   const roomId = req.params.roomId
   if (rooms[roomId]) {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'))
+    res.sendFile(path.join(__dirname, 'index.html'))
   } else {
     res.redirect('/')
   }
