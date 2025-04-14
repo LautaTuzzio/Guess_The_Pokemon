@@ -51,7 +51,7 @@ function createPokemonCard(pokemon, pokemonListContainer) {
     // Agrega todas las celdas al contenedor de la info
     cells.forEach(cell => {
         const div = document.createElement('div')
-        div.className = `info-cell ${cell.class}`
+        div.className = `info-cell`
         if (cell.id) {
             div.id = cell.id
         }

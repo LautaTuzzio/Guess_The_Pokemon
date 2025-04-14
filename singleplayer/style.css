@@ -210,22 +210,15 @@ h1 {
     color: white;
 }
 
-.info-cell:nth-child(3n+1) { background-color: #FF5555; }
-.info-cell:nth-child(3n+2) { background-color: #FFDD33; color: black; } 
-.info-cell:nth-child(3n) { background-color: #55DD55; } 
+.info-cell{
+    background-color: #df2b19 ;
+    width: 5%;
+}
 
 .info-cell.animated {
     opacity: 1;
     transform: translateY(0);
 }
-
-.info-cell:last-child {
-    border-right: none;
-}
-
-.info-cell:nth-child(3n+1) { background-color: #FF5555; color: white; }  
-.info-cell:nth-child(3n+2) { background-color: #FFDD33; color: black; } 
-.info-cell:nth-child(3n) { background-color: #55DD55; color: white; } 
 
 .red { background-color: #FF5555; }
 .blue { background-color: #5555FF; color: white; }

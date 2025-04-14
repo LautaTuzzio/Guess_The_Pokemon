@@ -105,7 +105,7 @@ function comparar(pokemonRandom, pokeInfo){
     setTimeout(() => {
       const type1 = document.getElementById("type1");
       if (type1) {
-        type1.style.backgroundColor = 'black';
+        type1.style.backgroundColor = '#22df19';
       }
     }, 100);
   }
@@ -120,7 +120,7 @@ function comparar(pokemonRandom, pokeInfo){
     setTimeout(() => {
       const type2 = document.getElementById("type2");
       if (type2) {
-        type2.style.backgroundColor = 'black';
+        type2.style.backgroundColor = '#22df19';
       }
     }, 100);
   }
@@ -130,7 +130,7 @@ function comparar(pokemonRandom, pokeInfo){
     setTimeout(() => {
       const color = document.getElementById("color");
       if (color) {
-        color.style.backgroundColor = 'black';
+        color.style.backgroundColor = '#22df19';
       }
     }, 100);
   }
@@ -142,7 +142,7 @@ function comparar(pokemonRandom, pokeInfo){
     setTimeout(() => {
       const generation = document.getElementById("generation");
       if (generation) {
-        generation.style.backgroundColor = 'black';
+        generation.style.backgroundColor = '#22df19';
       }
     }, 100);
   }
@@ -151,7 +151,7 @@ function comparar(pokemonRandom, pokeInfo){
     setTimeout(() => {
       const height = document.getElementById("height");
       if (height) {
-        height.style.backgroundColor = 'black';
+        height.style.backgroundColor = '#22df19';
       }
     }, 100);
   }
@@ -160,7 +160,7 @@ function comparar(pokemonRandom, pokeInfo){
     setTimeout(() => {
       const weight = document.getElementById("weight");
       if (weight) {
-        weight.style.backgroundColor = 'black';
+        weight.style.backgroundColor = '#22df19';
       }
     }, 100);
   }
@@ -168,7 +168,7 @@ function comparar(pokemonRandom, pokeInfo){
     setTimeout(() => {
       const habitat = document.getElementById("habitat");
       if (habitat) {
-        habitat.style.backgroundColor = 'black';
+        habitat.style.backgroundColor = '#22df19';
       }
     }, 100);
   }
@@ -177,7 +177,7 @@ function comparar(pokemonRandom, pokeInfo){
     setTimeout(() => {
       const evolutionStage = document.getElementById("evolutionStage");
       if (evolutionStage) {
-        evolutionStage.style.backgroundColor = 'black';
+        evolutionStage.style.backgroundColor = '#22df19';
       }
     }, 100);
   }
