@@ -76,7 +76,7 @@ async function getRandomPokemon() {
 }
 
 //Funcion para sacar el numero romano y devolverlo como decimal
-function decimal(obj) {
+export function decimal(obj) {
   const equivalencias = {
     I: 1,
     II: 2,
@@ -88,7 +88,7 @@ function decimal(obj) {
     VIII: 8,
     IX: 9
   };
-  if (!obj || !obj.name) return null;
+  if (!obj || !obj.name) return console.log(obj);
   let nombre = obj.name.trim().replace(/generation-/i, "").trim();
   return equivalencias[nombre.toUpperCase()] || null;
 }
@@ -183,7 +183,7 @@ function comparar(pokemonRandom, pokeInfo){
   }
 }
 
-const input = document.getElementById('pokemon-input')
+const input = document.getElementById('pokemoninput')
 input.addEventListener('keypress', async (event) => { 
   if (event.key === 'Enter') { 
     var pokemonName = input.value.trim().toLowerCase()
@@ -201,7 +201,6 @@ let pokemonInfo = [];
 
 window.onload = async function() {
   pokemonInfo = await getRandomPokemon();
-  console.log("Datos del Pokémon aleatorio:", pokemonInfo[0]);
   // Aquí podrías mostrar la información del Pokémon aleatorio en la tarjeta
   const card = document.getElementById('pokemon-card');
   if (card && pokemonInfo.length > 0) {

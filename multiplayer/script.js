@@ -1,8 +1,12 @@
+import { fetchPokemonData } from '../src/api.js'
+
 // Connect to Socket.io server
 const socket = io()
 let clientId = ''
 let currentRoomId = null
 let isReady = false
+// Add a global variable to store the current Pokemon data
+let currentPokemonData = null
 
 // DOM elements
 const lobbyScreen = document.getElementById('lobbyScreen')
@@ -168,6 +172,7 @@ socket.on('game_started', (data) => {
         const speciesResponse = await fetch(pokemon.species.url)
         const species = await speciesResponse.json()
         
+        
         // Fetch evolution chain
         const evolutionResponse = await fetch(species.evolution_chain.url)
         const evolutionChain = await evolutionResponse.json()
@@ -180,28 +185,152 @@ socket.on('game_started', (data) => {
             : (chain.evolves_to[0].evolves_to.length > 0 && 
                pokemon.name === chain.evolves_to[0].evolves_to[0].species.name) ? 3 : 1
         }
+
+        // Extract generation info from species data
+        const generation = species.generation.name.replace('generation-', '').toUpperCase();
+
+        currentPokemonData = {
+          name: pokemon.name,
+          types: pokemon.types.map(t => t.type.name),
+          color: species.color.name,
+          evolutionStage: evolutionStage,
+          weight: pokemon.weight,
+          height: pokemon.height,
+          habitat: species.habitat ? species.habitat.name : 'Desconocido',
+          image: pokemon.sprites.front_default,
+          generation: generation  // Add the generation here
+        }
         
         // Update UI
         const pokemonImage = document.getElementById('pokemon-imagen')
         const pokemonInfo = document.getElementById('pokemon-info')
         
         if (pokemonImage && pokemonInfo) {
-          pokemonImage.src = pokemon.sprites.front_default
+          pokemonImage.src = currentPokemonData.image
           pokemonInfo.innerHTML = `
-            <h2>${pokemon.name}</h2>
-            <p>Tipo 1: ${pokemon.types[0].type.name}</p>
-            <p>Tipo 2: ${pokemon.types[1] ? pokemon.types[1].type.name : 'N/A'}</p>
-            <p>Color: ${species.color.name}</p>
-            <p>Etapa de Evolucion: ${evolutionStage}</p>
-            <p>Peso: ${pokemon.weight}</p>
-            <p>Altura: ${pokemon.height}</p>
-            <p>Habitat: ${species.habitat ? species.habitat.name : 'Desconocido'}</p>
+            <h2>${currentPokemonData.name}</h2>
+            <p>Tipo 1: ${currentPokemonData.types[0]}</p>
+            <p>Tipo 2: ${currentPokemonData.types[1] || 'N/A'}</p>
+            <p>Color: ${currentPokemonData.color}</p>
+            <p>Etapa de Evolucion: ${currentPokemonData.evolutionStage}</p>
+            <p>Peso: ${currentPokemonData.weight/10} kg</p>
+            <p>Altura: ${currentPokemonData.height/10} m</p>
+            <p>Habitat: ${currentPokemonData.habitat}</p>
+            <p>Generación: ${currentPokemonData.generation}</p>
           `
         }
+        
       } catch (error) {
         console.error('Error fetching Pokemon:', error)
       }
     })()
+  }
+})
+
+// Game functions
+
+//Funcion para sacar el numero romano y devolverlo como decimal
+export function decimal(obj) {
+  const equivalencias = {
+    I: 1,
+    II: 2,
+    III: 3,
+    IV: 4,
+    V: 5,
+    VI: 6,
+    VII: 7,
+    VIII: 8,
+    IX: 9
+  };
+  if (!obj || !obj) return console.log(obj);
+  let nombre = obj.trim().replace(/generation-/i, "").trim();
+  return equivalencias[nombre.toUpperCase()] || null;
+}
+
+function comparar(pokemonRandom, pokeInfo){
+  //Check de victoria
+  if(pokemonRandom.name === pokeInfo.name ){
+    console.log("ganaste!!")
+  }
+  //comparacion de tipos
+  if (pokemonRandom.types[0] === pokeInfo.types[0]){
+    setTimeout(() => {
+      console.log("tipo 1 correcto")
+    }, 100);
+  }
+
+  //revisa si existe segundo tipo en el pokemon ingresado
+  if(!pokeInfo.types[1]){
+    pokeInfo.types[1] = "Ninguno"
+  }
+  //revisa si existe segundo tipo en el pokemon random
+  if(!pokemonRandom.types[1]){
+    pokemonRandom.types[1] = "Ninguno"
+  }
+  
+  //comparacion de tipo 2
+  if (pokemonRandom.types[1] === pokeInfo.types[1]){
+    setTimeout(() => {
+      console.log("tipo 2 correcto")
+    }, 100);
+  }
+
+  //comparacion de color
+  if (pokemonRandom.color === pokeInfo.color){
+    setTimeout(() => {
+      console.log("color correcto")
+    }, 100);
+  }
+
+  //convierto de numeros romanos a decimales
+  const randomGeneration = decimal(pokemonRandom.generation);
+  console.log(pokeInfo.generation)
+  if (randomGeneration === pokeInfo.generation){
+    setTimeout(() => {
+      console.log("generacion correcta")
+    }, 100);
+  }
+  //reviso si la altura y el peso son iguales
+  if(pokemonRandom.height/10 === pokeInfo.height){
+    setTimeout(() => {
+      console.log("altura correcta")
+    }, 100);
+  }
+  
+  if(pokemonRandom.weight/10=== pokeInfo.weight){
+    setTimeout(() => {
+      console.log("peso correcto")
+    }, 100);
+  }
+  if(pokemonRandom.habitat/10 === pokeInfo.habitat){
+    setTimeout(() => {
+      console.log("habitat correcto")
+    }, 100);
+  }
+
+  if(pokemonRandom.evolutionStage === pokeInfo.evolutionStage){
+    setTimeout(() => {
+      console.log("evolucion correcta")
+    }, 100);
+  }
+}
+
+
+const input = document.getElementById('pokemoninput')
+input.addEventListener('keypress', async (event) => { 
+  if (event.key === 'Enter') { 
+    const pokemonName = input.value.trim().toLowerCase()
+    if (pokemonName && currentPokemonData) {  
+      try {
+        const pokeinfo = await fetchPokemonData(pokemonName)
+        input.value = ""  
+        comparar(currentPokemonData,pokeinfo)
+      } catch(error) {
+        console.error("Error:", error)
+      }
+    } else if (!currentPokemonData) {
+      console.error("No Pokemon data available yet!")
+    }
   }
 })
 
@@ -219,6 +348,7 @@ function updateMembersList(members) {
 function leaveRoom() {
   currentRoomId = null
   isReady = false
+  currentPokemonData = null  
   
   // Switch back to lobby screen
   roomScreen.classList.add('hidden')
