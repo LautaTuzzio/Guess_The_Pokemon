@@ -28,7 +28,13 @@ async function fetchAllPokemon(loadingProgress) {
 
                     loaded++
                     const progress = Math.floor((loaded / total) * 100)
-                    loadingProgress.textContent = `Loading Pokemon data... ${progress}%`
+
+                    if(progress <= 80) {
+                        loadingProgress.textContent = `${progress}%, Llamando a los Pokemons. `
+                    }else{
+                        loadingProgress.textContent = `${progress}%, Alistando a los Pokemons. `
+                    }
+                    
 
                     return {
                         name: pokemon.name,

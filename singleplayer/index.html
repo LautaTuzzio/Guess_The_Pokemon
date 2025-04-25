@@ -1,21 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Guess the Pokemon</title>
     <link rel="stylesheet" href="./style.css">
 </head>
+
 <body>
+
+    <div class="pokemon-columns" id="pokemonColumns"></div>
+
     <div class="loading-screen" id="loading-screen">
-        <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png" alt="Loading..." class="pokeball">
-        <div class="progress" id="loading-progress">Loading Pokemon data... 0%</div>
+        <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png" alt="Loading..."
+            class="pokeball">
+        <div class="progress" id="loading-progress">0%, Llamando a los Pokemons.</div>
     </div>
+
     <div class="container">
-        <h1>Guess the Pokemon</h1>
+        <div class="header">
+            <div class="title-container">
+                <h1>Guess the Pokemon</h1>
+                <p>Adivina el pokemon en base a pistas</p>
+            </div>
+            <div class="hint-container">
+                <div class="hint enabled"> <!--a testear en "enabled"-->
+                    <img src="../assets/images/Pokebola.png" alt="">
+                    <div class="tooltip">Pista 1</div>
+                </div>
+                <div class="hint">
+                    <img src="../assets/images/Pokebola.png" alt="">
+                    <div class="tooltip">Pista 2</div>
+
+                </div>
+                <div class="hint">
+                    <img src="../assets/images/Pokebola.png" alt="">
+                    <div class="tooltip">Pista 3</div>
+
+                </div>
+            </div>
+        </div>
         <div class="search-container">
             <div class="autocomplete-container">
-                <input type="text" id="pokemon-input" placeholder="Enter a Pokemon name..." autocomplete="off">
+                <input type="text" id="pokemon-input" placeholder="Escriba el nombre de un pokemon" autocomplete="off">
                 <div id="autocomplete-dropdown" class="autocomplete-dropdown"></div>
             </div>
         </div>
@@ -27,4 +55,55 @@
     <script type="module" src="../src/main.js"></script>
     <script type="module" src="../src/game.js"></script>
 </body>
+
+<script>
+    const body = document.getElementById("body")
+    const columnsContainer = document.getElementById("pokemonColumns")
+
+    const numberOfColumns = Math.floor(window.innerWidth / 150)
+    const screenHeight = window.innerHeight
+    const spriteHeight = 96 + 8
+    const pokemonPerColumn = Math.ceil((screenHeight * 2) / spriteHeight)
+
+    const getRandomPokemonId = () => Math.floor(Math.random() * 1025) + 1
+
+    async function createPokemonSprite(pokemonId) {
+        const sprite = document.createElement('img')
+        sprite.className = 'pokemon-sprite'
+        sprite.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemonId}.png`
+        return sprite
+    }
+
+    async function createPokemonColumn() {
+        const column = document.createElement('div')
+        column.className = 'pokemon-column'
+
+        const sprites = []
+        for (let i = 0; i < pokemonPerColumn; i++) {
+            const pokemonId = getRandomPokemonId()
+            const sprite = await createPokemonSprite(pokemonId)
+            sprites.push(sprite)
+        }
+
+        sprites.forEach(sprite => {
+            column.appendChild(sprite)
+        })
+        sprites.forEach(sprite => {
+            column.appendChild(sprite.cloneNode(true))
+        })
+
+        return column
+    }
+
+    async function initializeColumns() {
+        for (let i = 0; i < numberOfColumns; i++) {
+            const column = await createPokemonColumn()
+            columnsContainer.appendChild(column)
+        }
+    }
+
+    initializeColumns();
+
+</script>
+
 </html>
