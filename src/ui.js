@@ -1,5 +1,26 @@
 import { getTextColorClass } from './utils.js'
 
+/**
+ * Determines the appropriate text size class based on content length
+ * @param {string} text - The text content to evaluate
+ * @returns {string} - CSS class name for text sizing
+ */
+function getTextSizeClass(text) {
+    if (!text) return '';
+    
+    const length = text.length;
+    
+    if (length > 15) {
+        return 'text-extra-long';
+    } else if (length > 12) {
+        return 'text-very-long';
+    } else if (length > 8) {
+        return 'text-long';
+    }
+    
+    return '';
+}
+
 // Crea y agrega la tarjeta del pokemon a la lista con animacion
 function createPokemonCard(pokemon, pokemonListContainer) {
     const card = document.createElement('div')
@@ -36,25 +57,39 @@ function createPokemonCard(pokemon, pokemonListContainer) {
     const infoContainer = document.createElement('div')
     infoContainer.className = 'pokemon-info'
     
+    // Process types for display
+    const displayType1 = type1.charAt(0).toUpperCase() + type1.slice(1)
+    const displayType2 = type2 !== 'none' ? type2.charAt(0).toUpperCase() + type2.slice(1) : 'Ninguno'
+    const displayColor = pokemon.color.charAt(0).toUpperCase() + pokemon.color.slice(1)
+    const displayHabitat = pokemon.habitat.charAt(0).toUpperCase() + pokemon.habitat.slice(1)
+    
     // Define todas las celdas
     const cells = [
-        { class: `type-cell ${type1}`,id: 'type1', text: type1.charAt(0).toUpperCase() + type1.slice(1) },
-        { class: `type-cell ${type2}`,id: 'type2', text: type2 !== 'none' ? type2.charAt(0).toUpperCase() + type2.slice(1) : 'None' },
-        { class: pokemon.habitat, id: 'habitat', text: pokemon.habitat.charAt(0).toUpperCase() + pokemon.habitat.slice(1) },
-        { class: pokemon.color, id: 'color', text: pokemon.color.charAt(0).toUpperCase() + pokemon.color.slice(1) },
-        { class: 'evolution-stage', id: 'evolutionStage', text: `Stage ${pokemon.evolutionStage}` },
-        { class: 'height', id: 'height', text: `${pokemon.height}m` },
-        { class: 'weight', id: 'weight', text: `${pokemon.weight}kg` },
-        { class: 'generation', id: 'generation', text: `Gen ${pokemon.generation}` },
+        { id: 'type1', text: displayType1, class: 'type1-cell' },
+        { id: 'type2', text: displayType2, class: 'type2-cell' },
+        { id: 'habitat', text: displayHabitat, class: 'habitat-cell' },
+        { id: 'color', text: displayColor, class: 'color-cell' },
+        { id: 'evolutionStage', text: `${pokemon.evolutionStage}`, class: 'evolution-cell' },
+        { id: 'height', text: `${pokemon.height}m`, class: 'height-cell' },
+        { id: 'weight', text: `${pokemon.weight}kg`, class: 'weight-cell' },
+        { id: 'generation', text: `Gen ${pokemon.generation}`, class: 'generation-cell' },
     ]
     
     // Agrega todas las celdas al contenedor de la info
     cells.forEach(cell => {
         const div = document.createElement('div')
-        div.className = `info-cell`
+        div.className = `info-cell ${cell.class || ''}`
+        
+        // Add text size class based on content length
+        const textSizeClass = getTextSizeClass(cell.text)
+        if (textSizeClass) {
+            div.className += ` ${textSizeClass}`
+        }
+        
         if (cell.id) {
             div.id = cell.id
         }
+        
         div.textContent = cell.text
         infoContainer.appendChild(div)
     })

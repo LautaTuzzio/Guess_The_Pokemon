@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Guess the Pokemon</title>
+    <title>Adivina el Pokémon</title>
     <link rel="stylesheet" href="./style.css">
 </head>
 
@@ -13,7 +13,7 @@
     <div class="pokemon-columns" id="pokemonColumns"></div>
 
     <div class="loading-screen" id="loading-screen">
-        <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png" alt="Loading..."
+        <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png" alt="Cargando..."
             class="pokeball">
         <div class="progress" id="loading-progress">0%, Llamando a los Pokemons.</div>
     </div>
@@ -21,29 +21,30 @@
     <div class="container">
         <div class="header">
             <div class="title-container">
-                <h1>Guess the Pokemon</h1>
-                <p>Adivina el pokemon en base a pistas</p>
+                <h1>Adivina el Pokémon</h1>
+                <p>Adivina el pokémon en base a pistas</p>
             </div>
             <div class="hint-container">
-                <div class="hint enabled"> <!--a testear en "enabled"-->
-                    <img src="../assets/images/Pokebola.png" alt="">
-                    <div class="tooltip">Pista 1</div>
+                <div class="hint" data-hint-number="1" data-attempts="3">
+                    <img src="../assets/images/Pokebola.png" alt="Pista 1">
+                    <div class="tooltip">Desbloquea en 3 intentos</div>
+                    <div class="hint-label">Pista 1</div>
                 </div>
-                <div class="hint">
-                    <img src="../assets/images/Pokebola.png" alt="">
-                    <div class="tooltip">Pista 2</div>
-
+                <div class="hint" data-hint-number="2" data-attempts="5">
+                    <img src="../assets/images/Pokebola.png" alt="Pista 2">
+                    <div class="tooltip">Desbloquea en 5 intentos</div>
+                    <div class="hint-label">Pista 2</div>
                 </div>
-                <div class="hint">
-                    <img src="../assets/images/Pokebola.png" alt="">
-                    <div class="tooltip">Pista 3</div>
-
+                <div class="hint" data-hint-number="3" data-attempts="7">
+                    <img src="../assets/images/Pokebola.png" alt="Pista 3">
+                    <div class="tooltip">Desbloquea en 7 intentos</div>
+                    <div class="hint-label">Pista 3</div>
                 </div>
             </div>
         </div>
         <div class="search-container">
             <div class="autocomplete-container">
-                <input type="text" id="pokemon-input" placeholder="Escriba el nombre de un pokemon" autocomplete="off">
+                <input type="text" id="pokemon-input" placeholder="Escribe el nombre de un pokémon" autocomplete="off">
                 <div id="autocomplete-dropdown" class="autocomplete-dropdown"></div>
             </div>
         </div>

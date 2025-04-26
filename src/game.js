@@ -1,4 +1,5 @@
 import { fetchPokemonData } from './api.js'
+import { initializeHints, incrementAttempts, resetHints } from './hints.js';
 
 async function getRandomPokemon() {
   const maxPokemon = 1025;
@@ -54,8 +55,6 @@ async function getRandomPokemon() {
     // Habitat
     const habitat = speciesData.habitat?.name || "unknown";
 
-    const card = document.getElementById('pokemon-card');
-
     return [
       pokemonData.name,
       pokemonData.sprites.front_default,
@@ -96,23 +95,41 @@ export function decimal(obj) {
 
 //Funcion para comparar los datos del pokemon aleatorio con los del pokemon ingresado
 function comparar(pokemonRandom, pokeInfo){
+  console.log("Random Pokemon:", pokemonRandom);
+  console.log("Guessed Pokemon:", pokeInfo);
+  
   //Check de victoria
-  if(pokemonRandom[0] === pokeInfo.name ){
-    console.log("ganaste!!")
+  if(pokemonRandom[0] === pokeInfo.name){
+    alert("¡Ganaste!");
+    
+    // Reset hints for new game
+    resetHints();
+    // Start a new game after a short delay
+    setTimeout(async () => {
+      pokemonInfo = await getRandomPokemon();
+      initializeHints(pokemonInfo);
+    }, 2000);
+    return;
   }
+  
+  // Increment attempt counter for hints
+  incrementAttempts();
+  
   //comparacion de tipos
   if (pokemonRandom[2] === pokeInfo.types[0]){
     setTimeout(() => {
       const type1 = document.getElementById("type1");
       if (type1) {
         type1.style.backgroundColor = '#22df19';
+      } else {
+        console.error("Type1 element not found");
       }
     }, 100);
   }
 
   //revisa si existe segundo tipo
   if(!pokeInfo.types[1]){
-    pokeInfo.types[1] = "Ninguno"
+    pokeInfo.types[1] = "Ninguno";
   }
   
   //comparacion de tipo 2
@@ -121,6 +138,8 @@ function comparar(pokemonRandom, pokeInfo){
       const type2 = document.getElementById("type2");
       if (type2) {
         type2.style.backgroundColor = '#22df19';
+      } else {
+        console.error("Type2 element not found");
       }
     }, 100);
   }
@@ -131,6 +150,8 @@ function comparar(pokemonRandom, pokeInfo){
       const color = document.getElementById("color");
       if (color) {
         color.style.backgroundColor = '#22df19';
+      } else {
+        console.error("Color element not found");
       }
     }, 100);
   }
@@ -143,15 +164,20 @@ function comparar(pokemonRandom, pokeInfo){
       const generation = document.getElementById("generation");
       if (generation) {
         generation.style.backgroundColor = '#22df19';
+      } else {
+        console.error("Generation element not found");
       }
     }, 100);
   }
+  
   //reviso si la altura y el peso son iguales
   if(pokemonRandom[6]/10 === pokeInfo.height){
     setTimeout(() => {
       const height = document.getElementById("height");
       if (height) {
         height.style.backgroundColor = '#22df19';
+      } else {
+        console.error("Height element not found");
       }
     }, 100);
   }
@@ -161,14 +187,19 @@ function comparar(pokemonRandom, pokeInfo){
       const weight = document.getElementById("weight");
       if (weight) {
         weight.style.backgroundColor = '#22df19';
+      } else {
+        console.error("Weight element not found");
       }
     }, 100);
   }
+  
   if(pokemonRandom[8] === pokeInfo.habitat){
     setTimeout(() => {
       const habitat = document.getElementById("habitat");
       if (habitat) {
         habitat.style.backgroundColor = '#22df19';
+      } else {
+        console.error("Habitat element not found");
       }
     }, 100);
   }
@@ -178,29 +209,40 @@ function comparar(pokemonRandom, pokeInfo){
       const evolutionStage = document.getElementById("evolutionStage");
       if (evolutionStage) {
         evolutionStage.style.backgroundColor = '#22df19';
+      } else {
+        console.error("Evolution stage element not found");
       }
     }, 100);
   }
 }
 
-const input = document.getElementById('pokemoninput')
-input.addEventListener('keypress', async (event) => { 
-  if (event.key === 'Enter') { 
-    var pokemonName = input.value.trim().toLowerCase()
-    try {
-      const pokeinfo = await fetchPokemonData(pokemonName)
-      pokemonName=""
-      comparar(pokemonInfo, pokeinfo)
-    } catch(error){
-      console.error("Error:", error)
+const input = document.getElementById('pokemon-input');
+if (!input) {
+  console.error("Input element not found!");
+} else {
+  input.addEventListener('keypress', async (event) => { 
+    if (event.key === 'Enter') { 
+      var pokemonName = input.value.trim().toLowerCase();
+      try {
+        const pokeinfo = await fetchPokemonData(pokemonName);
+        console.log("Fetched Pokemon data:", pokeinfo);
+        input.value = "";
+        comparar(pokemonInfo, pokeinfo);
+      } catch(error){
+        console.error("Error:", error);
+      }
     }
-  }
-})
+  });
+}
 
 let pokemonInfo = [];
 
 window.onload = async function() {
   pokemonInfo = await getRandomPokemon();
+  
+  // Initialize the hint system with the current Pokemon data
+  initializeHints(pokemonInfo);
+  
   // Aquí podrías mostrar la información del Pokémon aleatorio en la tarjeta
   const card = document.getElementById('pokemon-card');
   if (card && pokemonInfo.length > 0) {
