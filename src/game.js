@@ -100,15 +100,38 @@ function comparar(pokemonRandom, pokeInfo){
   
   //Check de victoria
   if(pokemonRandom[0] === pokeInfo.name){
-    alert("¡Ganaste!");
-    
-    // Reset hints for new game
-    resetHints();
-    // Start a new game after a short delay
-    setTimeout(async () => {
-      pokemonInfo = await getRandomPokemon();
-      initializeHints(pokemonInfo);
-    }, 2000);
+    // Show win modal
+    setTimeout(() => {
+      const modal = document.getElementById('win-modal');
+      const overlay = document.getElementById('win-modal-overlay');
+      const subtitle = document.getElementById('win-modal-pokemon');
+      if (modal && overlay && subtitle) {
+        subtitle.textContent = `El Pokémon era: ${pokemonRandom[0]}`;
+        modal.style.display = 'flex';
+        overlay.style.display = 'block';
+      }
+      // Play again button logic
+      const playAgain = document.getElementById('play-again-btn');
+      if (playAgain) {
+        playAgain.onclick = async () => {
+          modal.style.display = 'none';
+          overlay.style.display = 'none';
+          // Clear pokemon list
+          const list = document.getElementById('pokemon-list');
+          if (list) list.innerHTML = '';
+          // Fetch new pokemon
+          pokemonInfo = await getRandomPokemon();
+          initializeHints(pokemonInfo);
+        };
+      }
+      // Back to lobby button logic
+      const backToLobby = document.getElementById('back-to-lobby-btn');
+      if (backToLobby) {
+        backToLobby.onclick = () => {
+          window.location.href = '../index.html';
+        };
+      }
+    }, 300);
     return;
   }
   
@@ -120,7 +143,16 @@ function comparar(pokemonRandom, pokeInfo){
     setTimeout(() => {
       const type1 = document.getElementById("type1");
       if (type1) {
-        type1.style.backgroundColor = '#22df19';
+        type1.style.backgroundColor = '#22df19'; // green
+      } else {
+        console.error("Type1 element not found");
+      }
+    }, 100);
+  } else if (pokemonRandom[3] === pokeInfo.types[0]) {
+    setTimeout(() => {
+      const type1 = document.getElementById("type1");
+      if (type1) {
+        type1.style.backgroundColor = '#FFDD33'; // yellow
       } else {
         console.error("Type1 element not found");
       }
@@ -137,7 +169,16 @@ function comparar(pokemonRandom, pokeInfo){
     setTimeout(() => {
       const type2 = document.getElementById("type2");
       if (type2) {
-        type2.style.backgroundColor = '#22df19';
+        type2.style.backgroundColor = '#22df19'; // green
+      } else {
+        console.error("Type2 element not found");
+      }
+    }, 100);
+  } else if (pokemonRandom[2] === pokeInfo.types[1]) {
+    setTimeout(() => {
+      const type2 = document.getElementById("type2");
+      if (type2) {
+        type2.style.backgroundColor = '#FFDD33'; // yellow
       } else {
         console.error("Type2 element not found");
       }

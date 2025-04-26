@@ -10,6 +10,11 @@ function getTextSizeClass(text) {
     
     const length = text.length;
     
+    // Check for hyphenated words or words with spaces that need to be wrapped
+    if (text.includes('-') || text.includes(' ') || text.includes('_')) {
+        return 'text-multi-word';
+    }
+    
     if (length > 15) {
         return 'text-extra-long';
     } else if (length > 12) {
