@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Room Chat System</title>
+  <title>Guess The Pokemon</title>
   <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
-  <h1>Room Chat System</h1>
+  <h1>Guess The Pokemon</h1>
   <p>Your client ID: <span id="clientId">Connecting...</span></p>
   
   <div class="container">
@@ -31,19 +31,8 @@
       <h3>Messages:</h3>
       <div id="messages"></div>
     </div>
-
-    <div id="gameScreen" class="card hidden">
-      <h2>Game Room: <span id="gameRoomId">Loading...</span></h2>
-      <div class="pokemon-card">
-        <img id="pokemon-imagen" src="" alt="Pokemon">
-        <div id="pokemon-info"></div>
-      </div>
-      <input type="text" id="pokemoninput" placeholder="Enter a Pokemon name..." autocomplete="off">
-      
-    </div>
   </div>
-
   <script src="/socket.io/socket.io.js"></script>
-  <script type="module" src="./script.js"></script>
+  <script type="module" src="script.js"></script>
 </body>
 </html>

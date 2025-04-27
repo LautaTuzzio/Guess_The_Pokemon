@@ -11,7 +11,7 @@ let currentPokemonData = null
 // DOM elements
 const lobbyScreen = document.getElementById('lobbyScreen')
 const roomScreen = document.getElementById('roomScreen')
-const gameScreen = document.getElementById('gameScreen')
+
 const createRoomBtn = document.getElementById('createRoomBtn')
 const joinRoomBtn = document.getElementById('joinRoomBtn')
 const joinRoomInput = document.getElementById('joinRoomInput')
@@ -90,8 +90,6 @@ socket.on('room_created', (data) => {
   // Switch to room screen
   lobbyScreen.classList.add('hidden')
   roomScreen.classList.remove('hidden')
-  gameScreen.classList.add('hidden')
-  
   addMessage(`You created room: ${currentRoomId}`, true)
 })
 
@@ -104,8 +102,7 @@ socket.on('joined_room', (data) => {
   // Switch to room screen
   lobbyScreen.classList.add('hidden')
   roomScreen.classList.remove('hidden')
-  gameScreen.classList.add('hidden')
-  
+
   addMessage(`You joined room: ${currentRoomId}`, true)
 })
 
@@ -147,10 +144,6 @@ socket.on('player_ready_update', (data) => {
       // Switch to game screen
       lobbyScreen.classList.add('hidden')
       roomScreen.classList.add('hidden')
-      gameScreen.classList.remove('hidden')
-      
-      // Set room ID in game screen
-      document.getElementById('gameRoomId').textContent = currentRoomId
     }
   }
 })
@@ -219,7 +212,10 @@ socket.on('game_started', (data) => {
             <p>Generación: ${currentPokemonData.generation}</p>
           `
         }
+        console.log(currentPokemonData)
+        localStorage.setItem('pokemonInfo', JSON.stringify(currentPokemonData));
         
+        window.location.href = "game.html";
       } catch (error) {
         console.error('Error fetching Pokemon:', error)
       }
@@ -227,112 +223,6 @@ socket.on('game_started', (data) => {
   }
 })
 
-// Game functions
-
-//Funcion para sacar el numero romano y devolverlo como decimal
-export function decimal(obj) {
-  const equivalencias = {
-    I: 1,
-    II: 2,
-    III: 3,
-    IV: 4,
-    V: 5,
-    VI: 6,
-    VII: 7,
-    VIII: 8,
-    IX: 9
-  };
-  if (!obj || !obj) return console.log(obj);
-  let nombre = obj.trim().replace(/generation-/i, "").trim();
-  return equivalencias[nombre.toUpperCase()] || null;
-}
-
-function comparar(pokemonRandom, pokeInfo){
-  //Check de victoria
-  if(pokemonRandom.name === pokeInfo.name ){
-    console.log("ganaste!!")
-  }
-  //comparacion de tipos
-  if (pokemonRandom.types[0] === pokeInfo.types[0]){
-    setTimeout(() => {
-      console.log("tipo 1 correcto")
-    }, 100);
-  }
-
-  //revisa si existe segundo tipo en el pokemon ingresado
-  if(!pokeInfo.types[1]){
-    pokeInfo.types[1] = "Ninguno"
-  }
-  //revisa si existe segundo tipo en el pokemon random
-  if(!pokemonRandom.types[1]){
-    pokemonRandom.types[1] = "Ninguno"
-  }
-  
-  //comparacion de tipo 2
-  if (pokemonRandom.types[1] === pokeInfo.types[1]){
-    setTimeout(() => {
-      console.log("tipo 2 correcto")
-    }, 100);
-  }
-
-  //comparacion de color
-  if (pokemonRandom.color === pokeInfo.color){
-    setTimeout(() => {
-      console.log("color correcto")
-    }, 100);
-  }
-
-  //convierto de numeros romanos a decimales
-  const randomGeneration = decimal(pokemonRandom.generation);
-  console.log(pokeInfo.generation)
-  if (randomGeneration === pokeInfo.generation){
-    setTimeout(() => {
-      console.log("generacion correcta")
-    }, 100);
-  }
-  //reviso si la altura y el peso son iguales
-  if(pokemonRandom.height/10 === pokeInfo.height){
-    setTimeout(() => {
-      console.log("altura correcta")
-    }, 100);
-  }
-  
-  if(pokemonRandom.weight/10=== pokeInfo.weight){
-    setTimeout(() => {
-      console.log("peso correcto")
-    }, 100);
-  }
-  if(pokemonRandom.habitat/10 === pokeInfo.habitat){
-    setTimeout(() => {
-      console.log("habitat correcto")
-    }, 100);
-  }
-
-  if(pokemonRandom.evolutionStage === pokeInfo.evolutionStage){
-    setTimeout(() => {
-      console.log("evolucion correcta")
-    }, 100);
-  }
-}
-
-
-const input = document.getElementById('pokemoninput')
-input.addEventListener('keypress', async (event) => { 
-  if (event.key === 'Enter') { 
-    const pokemonName = input.value.trim().toLowerCase()
-    if (pokemonName && currentPokemonData) {  
-      try {
-        const pokeinfo = await fetchPokemonData(pokemonName)
-        input.value = ""  
-        comparar(currentPokemonData,pokeinfo)
-      } catch(error) {
-        console.error("Error:", error)
-      }
-    } else if (!currentPokemonData) {
-      console.error("No Pokemon data available yet!")
-    }
-  }
-})
 
 // Helper functions
 function updateMembersList(members) {

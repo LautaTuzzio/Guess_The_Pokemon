@@ -119,6 +119,7 @@ io.on('connection', (socket) => {
     
     // If all players are ready and game hasn't started, generate Pokemon ID
     if (allReady && !rooms[roomId].gameStarted) {
+      
       rooms[roomId].pokemonId = Math.floor(Math.random() * 1025) + 1
       rooms[roomId].gameStarted = true
       console.log(`Generated Pokemon ID ${rooms[roomId].pokemonId} for room ${roomId}`)
