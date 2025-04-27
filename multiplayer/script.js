@@ -173,10 +173,23 @@ socket.on('game_started', (data) => {
         // Calculate evolution stage
         let evolutionStage = 1
         const chain = evolutionChain.chain
-        if (chain.evolves_to.length > 0) {
-          evolutionStage = chain.species.name === pokemon.name ? 2 
-            : (chain.evolves_to[0].evolves_to.length > 0 && 
-               pokemon.name === chain.evolves_to[0].evolves_to[0].species.name) ? 3 : 1
+        
+        if (chain.species.name === pokemon.name) {
+            evolutionStage = 1; // Forma base
+        } else if (chain.evolves_to.length > 0) {
+            // Buscar en primera evolución
+            const firstEvo = chain.evolves_to.find(evo => evo.species.name === pokemon.name);
+            if (firstEvo) {
+                evolutionStage = 2;
+            } else {
+                // Buscar en segunda evolución
+                for (const evo of chain.evolves_to) {
+                    if (evo.evolves_to.some(finalEvo => finalEvo.species.name === pokemon.name)) {
+                        evolutionStage = 3;
+                        break;
+                    }
+                }
+            }
         }
 
         // Extract generation info from species data
@@ -213,6 +226,7 @@ socket.on('game_started', (data) => {
           `
         }
         console.log(currentPokemonData)
+        console.log("sada")
         localStorage.setItem('pokemonInfo', JSON.stringify(currentPokemonData));
         
         window.location.href = "game.html";

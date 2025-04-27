@@ -74,7 +74,7 @@ function createPokemonCard(pokemon, pokemonListContainer) {
         { id: 'type2', text: displayType2, class: 'type2-cell', label: 'Tipo 2' },
         { id: 'habitat', text: displayHabitat, class: 'habitat-cell', label: 'Hábitat' },
         { id: 'color', text: displayColor, class: 'color-cell', label: 'Color' },
-        { id: 'evolutionStage', text: `${pokemon.evolutionStage}`, class: 'evolution-cell', label: 'Etapa' },
+        { id: 'evolution', text: `${pokemon.evolutionStage}`, class: 'evolution-cell', label: 'Etapa' },
         { id: 'height', text: `${pokemon.height}m`, class: 'height-cell', label: 'Altura' },
         { id: 'weight', text: `${pokemon.weight}kg`, class: 'weight-cell', label: 'Peso' },
         { id: 'generation', text: `Gen ${pokemon.generation}`, class: 'generation-cell', label: 'Generación' },

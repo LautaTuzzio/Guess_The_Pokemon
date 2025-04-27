@@ -98,46 +98,6 @@ function comparar(pokemonRandom, pokeInfo){
   console.log("Random Pokemon:", pokemonRandom);
   console.log("Guessed Pokemon:", pokeInfo);
   
-  //Check de victoria
-  if(pokemonRandom[0] === pokeInfo.name){
-    // Show win modal
-    setTimeout(() => {
-      const modal = document.getElementById('win-modal');
-      const overlay = document.getElementById('win-modal-overlay');
-      const subtitle = document.getElementById('win-modal-pokemon');
-      if (modal && overlay && subtitle) {
-        subtitle.textContent = `El Pokémon era: ${pokemonRandom[0]}`;
-        modal.style.display = 'flex';
-        overlay.style.display = 'block';
-      }
-      // Play again button logic
-      const playAgain = document.getElementById('play-again-btn');
-      if (playAgain) {
-        playAgain.onclick = async () => {
-          modal.style.display = 'none';
-          overlay.style.display = 'none';
-          // Clear pokemon list
-          const list = document.getElementById('pokemon-list');
-          if (list) list.innerHTML = '';
-          // Fetch new pokemon
-          pokemonInfo = await getRandomPokemon();
-          initializeHints(pokemonInfo);
-        };
-      }
-      // Back to lobby button logic
-      const backToLobby = document.getElementById('back-to-lobby-btn');
-      if (backToLobby) {
-        backToLobby.onclick = () => {
-          window.location.href = '../index.html';
-        };
-      }
-    }, 300);
-    return;
-  }
-  
-  // Increment attempt counter for hints
-  incrementAttempts();
-  
   //comparacion de tipos
   if (pokemonRandom[2] === pokeInfo.types[0]){
     setTimeout(() => {
@@ -148,7 +108,7 @@ function comparar(pokemonRandom, pokeInfo){
         console.error("Type1 element not found");
       }
     }, 100);
-  } else if (pokemonRandom[3] === pokeInfo.types[0]) {
+  } else if (pokeInfo.types[1] && pokemonRandom[3] === pokeInfo.types[0]) {
     setTimeout(() => {
       const type1 = document.getElementById("type1");
       if (type1) {
@@ -174,7 +134,7 @@ function comparar(pokemonRandom, pokeInfo){
         console.error("Type2 element not found");
       }
     }, 100);
-  } else if (pokemonRandom[2] === pokeInfo.types[1]) {
+  } else if (pokeInfo.types[1] && pokemonRandom[2] === pokeInfo.types[1]) {
     setTimeout(() => {
       const type2 = document.getElementById("type2");
       if (type2) {
@@ -255,6 +215,47 @@ function comparar(pokemonRandom, pokeInfo){
       }
     }, 100);
   }
+
+  //Check de victoria
+  if(pokemonRandom[0] === pokeInfo.name){
+    // Show win modal
+    setTimeout(() => {
+      const modal = document.getElementById('win-modal');
+      const overlay = document.getElementById('win-modal-overlay');
+      const subtitle = document.getElementById('win-modal-pokemon');
+      if (modal && overlay && subtitle) {
+        subtitle.textContent = `El Pokémon era: ${pokemonRandom[0]}`;
+        modal.style.display = 'flex';
+        overlay.style.display = 'block';
+      }
+      // Play again button logic
+      const playAgain = document.getElementById('play-again-btn');
+      if (playAgain) {
+        playAgain.onclick = async () => {
+          modal.style.display = 'none';
+          overlay.style.display = 'none';
+          // Clear pokemon list
+          const list = document.getElementById('pokemon-list');
+          if (list) list.innerHTML = '';
+          // Fetch new pokemon
+          pokemonInfo = await getRandomPokemon();
+          initializeHints(pokemonInfo);
+        };
+      }
+      // Back to lobby button logic
+      const backToLobby = document.getElementById('back-to-lobby-btn');
+      if (backToLobby) {
+        backToLobby.onclick = () => {
+          window.location.href = '../index.html';
+        };
+      }
+    }, 2500);
+    return;
+  }
+  
+  // Increment attempt counter for hints
+  incrementAttempts();
+
 }
 
 const input = document.getElementById('pokemon-input');

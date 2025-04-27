@@ -11,7 +11,7 @@ let openedPokeball = null; // Track the currently opened Pokeball
  * @param {Array} currentPokemonData - The data of the Pokemon to guess
  */
 function initializeHints(currentPokemonData) {
-    console.log("Initializing hints with Pokemon:", currentPokemonData[0]);
+    console.log("Initializing hints with Pokemon:", currentPokemonData);
     // Reset attempt count
     attemptCount = 0;
     hintsEnabled = [false, false, false];
