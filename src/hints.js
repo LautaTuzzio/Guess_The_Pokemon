@@ -1,13 +1,3 @@
-// Manages the hint system for the Pokemon guessing game
-// Hints are unlocked after specific numbers of attempts
-import { translateType, capitalize, uiTranslations } from './translations.js';
-
-// Constants for hint thresholds
-const HINT_THRESHOLDS = {
-    TYPE_HINT: 3,    // First hint: Pokemon type(s)
-    LETTER_HINT: 5,  // Second hint: First letter
-    SILHOUETTE_HINT: 7 // Third hint: Silhouette
-};
 
 // Track the number of attempts
 let attemptCount = 0;
@@ -74,7 +64,7 @@ function resetHintElements() {
         // Update tooltip text
         const tooltip = hint.querySelector('.tooltip');
         if (tooltip) {
-            tooltip.textContent = `${uiTranslations["Unlocks in"]} ${attempts} ${attempts === 1 ? uiTranslations["attempt"] : uiTranslations["attempts"]}`;
+            tooltip.textContent = `Se desbloquea en ${attempts} ${attempts === 1 ? "intento" : "intentos"}`;
             tooltip.classList.remove('show');
         }
     });
@@ -167,7 +157,7 @@ function setupHintListeners() {
                         activeTooltip.classList.remove('show');
                     }
                     
-                    tooltip.textContent = `${uiTranslations["Unlocks in"]} ${remaining} ${remaining === 1 ? uiTranslations["attempt"] : uiTranslations["attempts"]}`;
+                    tooltip.textContent = `Se desbloquea en ${remaining} ${remaining === 1 ? "intento" : "intentos"}`;
                     tooltip.classList.toggle('show');
                     
                     // Update active tooltip reference
@@ -195,9 +185,9 @@ function updateTooltipContent(tooltip, hintIndex) {
     switch(hintIndex) {
         case 0: // Type hint
             const type1 = pokemonData[2];
-            const type2 = pokemonData[3] !== uiTranslations["None"] ? pokemonData[3] : null;
+            const type2 = pokemonData[3] !== "None" ? pokemonData[3] : null;
             
-            let message = `${uiTranslations["Type"]}: ${type1}`;
+            let message = `Tipo: ${type1}`;
             
             if (type2) {
                 message += ` / ${type2}`;
@@ -208,15 +198,15 @@ function updateTooltipContent(tooltip, hintIndex) {
         case 1: // First letter hint
             const name = pokemonData[0];
             const firstLetter = name.charAt(0).toUpperCase();
-            tooltip.innerHTML = `${uiTranslations["The name starts with"]}: <strong>${firstLetter}</strong>`;
+            tooltip.innerHTML = `La nombre comienza con: <strong>${firstLetter}</strong>`;
             break;
             
         case 2: // Silhouette hint
-            tooltip.textContent = uiTranslations["Tap to see the silhouette"];
+            tooltip.textContent = "Toca para ver la silueta";
             break;
             
         default:
-            tooltip.textContent = uiTranslations["Hint"];
+            tooltip.textContent = "Pista";
     }
 }
 
@@ -253,12 +243,12 @@ function showSilhouettePopup() {
     // Create silhouette image
     const silhouetteImg = document.createElement('img');
     silhouetteImg.src = pokemonData[1]; // Pokemon sprite URL
-    silhouetteImg.alt = uiTranslations["Pokemon Silhouette"];
+    silhouetteImg.alt = "Silueta del Pokémon";
     silhouetteImg.className = 'silhouette-image';
     
     // Create title
     const title = document.createElement('h3');
-    title.textContent = uiTranslations["Pokemon Silhouette"];
+    title.textContent = "Silueta del Pokémon";
     
     // Add elements to popup
     popup.appendChild(closeButton);
@@ -309,7 +299,7 @@ function checkHintAvailability() {
             const tooltip = hint.querySelector('.tooltip');
             if (tooltip) {
                 const remaining = attempts - attemptCount;
-                tooltip.textContent = `${uiTranslations["Unlocks in"]} ${remaining} ${remaining === 1 ? uiTranslations["attempt"] : uiTranslations["attempts"]}`;
+                tooltip.textContent = `Se desbloquea en ${remaining} ${remaining === 1 ? "intento" : "intentos"}`;
             }
         }
     });
@@ -343,7 +333,7 @@ function enableHint(hintElement, hintIndex) {
     const hintNumber = hintIndex + 1;
     const hintMessage = document.createElement('div');
     hintMessage.className = 'hint-notification';
-    hintMessage.textContent = `¡${uiTranslations["Hint"]} ${hintNumber} ${uiTranslations["Hint unlocked! Tap the Pokeball to see it."]}`;
+    hintMessage.textContent = `¡Pista ${hintNumber} desbloqueada! Toca la Pokebola para verla.`;
     document.body.appendChild(hintMessage);
     
     // Remove notification after 3 seconds
@@ -362,13 +352,13 @@ function enableHint(hintElement, hintIndex) {
 function getTooltipText(hintIndex) {
     switch(hintIndex) {
         case 0:
-            return uiTranslations["Tap to see the type"];
+            return "Toca para ver el tipo";
         case 1:
-            return uiTranslations["Tap to see the first letter"];
+            return "Toca para ver la primera letra";
         case 2:
-            return uiTranslations["Tap to see the silhouette"];
+            return "Toca para ver la silueta";
         default:
-            return uiTranslations["Hint"];
+            return "Pista";
     }
 }
 

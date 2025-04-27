@@ -70,32 +70,38 @@ function createPokemonCard(pokemon, pokemonListContainer) {
     
     // Define todas las celdas
     const cells = [
-        { id: 'type1', text: displayType1, class: 'type1-cell' },
-        { id: 'type2', text: displayType2, class: 'type2-cell' },
-        { id: 'habitat', text: displayHabitat, class: 'habitat-cell' },
-        { id: 'color', text: displayColor, class: 'color-cell' },
-        { id: 'evolutionStage', text: `${pokemon.evolutionStage}`, class: 'evolution-cell' },
-        { id: 'height', text: `${pokemon.height}m`, class: 'height-cell' },
-        { id: 'weight', text: `${pokemon.weight}kg`, class: 'weight-cell' },
-        { id: 'generation', text: `Gen ${pokemon.generation}`, class: 'generation-cell' },
+        { id: 'type1', text: displayType1, class: 'type1-cell', label: 'Tipo 1' },
+        { id: 'type2', text: displayType2, class: 'type2-cell', label: 'Tipo 2' },
+        { id: 'habitat', text: displayHabitat, class: 'habitat-cell', label: 'Hábitat' },
+        { id: 'color', text: displayColor, class: 'color-cell', label: 'Color' },
+        { id: 'evolutionStage', text: `${pokemon.evolutionStage}`, class: 'evolution-cell', label: 'Etapa' },
+        { id: 'height', text: `${pokemon.height}m`, class: 'height-cell', label: 'Altura' },
+        { id: 'weight', text: `${pokemon.weight}kg`, class: 'weight-cell', label: 'Peso' },
+        { id: 'generation', text: `Gen ${pokemon.generation}`, class: 'generation-cell', label: 'Generación' },
     ]
     
     // Agrega todas las celdas al contenedor de la info
     cells.forEach(cell => {
         const div = document.createElement('div')
         div.className = `info-cell ${cell.class || ''}`
-        
         // Add text size class based on content length
         const textSizeClass = getTextSizeClass(cell.text)
         if (textSizeClass) {
             div.className += ` ${textSizeClass}`
         }
-        
         if (cell.id) {
             div.id = cell.id
         }
-        
-        div.textContent = cell.text
+        // Label
+        const label = document.createElement('div')
+        label.className = 'info-label'
+        label.textContent = cell.label
+        div.appendChild(label)
+        // Value
+        const value = document.createElement('div')
+        value.className = 'info-value'
+        value.textContent = cell.text
+        div.appendChild(value)
         infoContainer.appendChild(div)
     })
     
