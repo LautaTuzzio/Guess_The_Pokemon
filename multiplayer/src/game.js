@@ -3,7 +3,71 @@ import { incrementAttempts,initializeHints } from './hints.js'
 const socket = io()
 
 const randpokemonInfo = JSON.parse(localStorage.getItem('pokemonInfo'));
-console.log(randpokemonInfo)
+console.log('Informacion Pokemon Aleatorio:', randpokemonInfo)
+
+// Escuchar eventos de fin de juego
+socket.on('game_over', (data) => {
+  console.log(`Jugador con ID ${data.winnerId} gano el juego con ${data.pokemonName}!`);
+  
+  // Show win modal to all players
+  showWinModal(data.winnerId, data.pokemonName);
+});
+
+// Funcion para mostrar el modal de victoria
+function showWinModal(winnerId, pokemonName) {
+  const modal = document.getElementById('win-modal');
+  const overlay = document.getElementById('win-modal-overlay');
+  const subtitle = document.getElementById('win-modal-pokemon');
+  
+  if (modal && overlay && subtitle) {
+    // Personalizar mensaje dependiendo si es el jugador actual o no
+    if (winnerId === socket.id) {
+      subtitle.innerHTML = `<strong>¡Ganaste!</strong><br>El Pokémon era: ${pokemonName}`;
+    } else {
+      subtitle.innerHTML = `<strong>Jugador ${winnerId} ganó!</strong><br>El Pokémon era: ${pokemonName}`;
+    }
+    
+    modal.style.display = 'flex';
+    overlay.style.display = 'block';
+    
+    // Funcionalidad del boton volver al inicio
+    const backToLobbyBtn = document.getElementById('back-to-lobby-btn');
+    if (backToLobbyBtn) {
+      backToLobbyBtn.onclick = () => {
+        window.location.href = '../index.html';
+      };
+    }
+    
+    // Funcionalidad del boton jugar otra vez
+    const playAgainBtn = document.getElementById('play-again-btn');
+    if (playAgainBtn) {
+      playAgainBtn.onclick = () => {
+        window.location.href = '../multiplayer/index.html';
+      };
+    }
+  }
+};
+
+// Escuchar eventos de victoria simplificados
+socket.on('someone_has_won', (data) => {
+  console.log('Evento someone_has_won recibido:', data.message);
+  
+  // Show win modal to all players
+  showWinModal(data.winnerId, data.pokemonName);
+});
+
+// Escuchar eventos globales del juego como respaldo
+socket.on('global_game_event', (data) => {
+  console.log('Evento global de juego recibido:', data.type, data.message);
+  
+  if (data.type === 'win') {
+    // Verificar si estamos en la misma sala
+    const currentRoomId = localStorage.getItem('currentRoomId');
+    if (currentRoomId === data.roomId) {
+      showWinModal(data.winnerId, data.pokemonName);
+    }
+  }
+})
 
 //Funcion para sacar el numero romano y devolverlo como decimal
 export function decimal(obj) {
@@ -24,12 +88,23 @@ export function decimal(obj) {
 }
 
 function comparar(pokemonRandom, pokeInfo) {
+  // Get room ID from localStorage to ensure consistency
+  const currentRoomId = localStorage.getItem('currentRoomId');
+  
+  // Send the guess to the server for logging
+  socket.emit('player_guess', {
+    roomId: currentRoomId,
+    playerId: socket.id,
+    pokemonName: pokeInfo.name
+  });
+  
+  console.log('Jugador adivino:', pokeInfo.name, 'en sala:', currentRoomId);
   //comparacion de tipos
   if (pokemonRandom.types[0].toLowerCase() === pokeInfo.types[0].toLowerCase()) {
     setTimeout(() => {
       const type1 = document.getElementById("type1");
       if (type1) {
-        type1.style.backgroundColor = '#22df19'; // green
+        type1.style.backgroundColor = '#22df19'; // verde
       } else {
         console.error("Type1 element not found");
       }
@@ -38,7 +113,7 @@ function comparar(pokemonRandom, pokeInfo) {
     setTimeout(() => {
       const type1 = document.getElementById("type1");
       if (type1) {
-        type1.style.backgroundColor = '#FFDD33'; // yellow
+        type1.style.backgroundColor = '#FFDD33'; // amarillo
       } else {
         console.error("Type1 element not found");
       }
@@ -60,7 +135,7 @@ function comparar(pokemonRandom, pokeInfo) {
     setTimeout(() => {
       const type2 = document.getElementById("type2");
       if (type2) {
-        type2.style.backgroundColor = '#22df19'; // green
+        type2.style.backgroundColor = '#22df19'; // verde
       } else {
         console.error("Type2 element not found");
       }
@@ -69,7 +144,7 @@ function comparar(pokemonRandom, pokeInfo) {
     setTimeout(() => {
       const type2 = document.getElementById("type2");
       if (type2) {
-        type2.style.backgroundColor = '#FFDD33'; // yellow
+        type2.style.backgroundColor = '#FFDD33'; // amarillo
       } else {
         console.error("Type2 element not found");
       }
@@ -83,7 +158,7 @@ function comparar(pokemonRandom, pokeInfo) {
       if (color) {
         color.style.backgroundColor = '#22df19';
       } else {
-        console.error("Color element not found");
+        console.error("Elemento color no encontrado");
       }
     }, 100);
   }
@@ -97,7 +172,7 @@ function comparar(pokemonRandom, pokeInfo) {
       if (generation) {
         generation.style.backgroundColor = '#22df19';
       } else {
-        console.error("Generation element not found");
+        console.error("Elemento generation no encontrado");
       }
     }, 100);
   }
@@ -108,7 +183,7 @@ function comparar(pokemonRandom, pokeInfo) {
       if (height) {
         height.style.backgroundColor = '#22df19';
       } else {
-        console.error("Height element not found");
+        console.error("Elemento height no encontrado");
       }
     }, 100);
   }
@@ -119,7 +194,7 @@ function comparar(pokemonRandom, pokeInfo) {
       if (weight) {
         weight.style.backgroundColor = '#22df19';
       } else {
-        console.error("Weight element not found");
+        console.error("Elemento weight no encontrado");
       }
     }, 100);
   }
@@ -134,7 +209,7 @@ function comparar(pokemonRandom, pokeInfo) {
       if (habitat) {
         habitat.style.backgroundColor = '#22df19';
       } else {
-        console.error("Habitat element not found");
+        console.error("Elemento habitat no encontrado");
       }
     }, 100);
   }
@@ -144,30 +219,28 @@ function comparar(pokemonRandom, pokeInfo) {
       if (evolution) {
         evolution.style.backgroundColor = '#22df19';
       } else {
-        console.error("Evolution element not found");
+        console.error("Elemento evolution no encontrado");
       }
     }, 100);
   }
 
-  if (pokemonRandom.name === pokeInfo.name) {
-    // Show win modal
-    setTimeout(() => {
-      const modal = document.getElementById('win-modal');
-      const overlay = document.getElementById('win-modal-overlay');
-      const subtitle = document.getElementById('win-modal-pokemon');
-      if (modal && overlay && subtitle) {
-        subtitle.textContent = `El Pokémon era: ${pokemonRandom.name}`;
-        modal.style.display = 'flex';
-        overlay.style.display = 'block';
-      }
-      // Back to lobby button logic
-      const backToLobby = document.getElementById('back-to-lobby-btn');
-      if (backToLobby) {
-        backToLobby.onclick = () => {
-          window.location.href = '../index.html';
-        };
-      }
-    }, 2500);
+  if(pokemonRandom.name.toLowerCase() === pokeInfo.name.toLowerCase()){
+    // Notificar al servidor sobre la victoria
+    const currentRoomId = localStorage.getItem('currentRoomId');
+    
+    if (currentRoomId) {
+      console.log(`Usuario ${socket.id} ha ganado el juego en la sala ${currentRoomId}!`);
+      
+      // Enviar notificacion de victoria al servidor con el nombre del Pokemon
+      socket.emit('player_win', {
+        roomId: currentRoomId,
+        playerId: socket.id,
+        pokemonName: pokemonRandom.name
+      });
+      
+      // El modal se mostrara via eventos de socket en todas las pestanas
+    }
+    
     return;
   }
 
@@ -180,7 +253,7 @@ function comparar(pokemonRandom, pokeInfo) {
 
 const input = document.getElementById('pokemoninput');
 if (!input) {
-  console.error("Input element not found!");
+  console.error("Elemento input no encontrado!");
 } else {
   input.addEventListener('keypress', async (event) => {
     if (event.key === 'Enter') {
@@ -188,6 +261,7 @@ if (!input) {
       try {
         const pokeinfo = await fetchPokemonData(pokemonName);
         input.value = "";
+        console.log("Datos de Pokemon obtenidos:", pokeinfo);
         comparar(randpokemonInfo, pokeinfo);
       } catch (error) {
         console.error("Error:", error);

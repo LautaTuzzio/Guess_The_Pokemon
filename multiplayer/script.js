@@ -1,14 +1,14 @@
 import { fetchPokemonData } from '../src/api.js'
 
-// Connect to Socket.io server
+// Conectar al servidor de Socket.io
 const socket = io()
 let clientId = ''
 let currentRoomId = null
 let isReady = false
-// Add a global variable to store the current Pokemon data
+// Agregar una variable global para almacenar los datos del Pokemon actual
 let currentPokemonData = null
 
-// DOM elements
+// Elementos del DOM
 const lobbyScreen = document.getElementById('lobbyScreen')
 const roomScreen = document.getElementById('roomScreen')
 
@@ -17,62 +17,52 @@ const joinRoomBtn = document.getElementById('joinRoomBtn')
 const joinRoomInput = document.getElementById('joinRoomInput')
 const roomIdSpan = document.getElementById('roomId')
 const roomMembersP = document.getElementById('roomMembers')
-const sayHelloBtn = document.getElementById('sayHelloBtn')
 const leaveRoomBtn = document.getElementById('leaveRoomBtn')
 const readyBtn = document.getElementById('readyBtn')
 const messagesDiv = document.getElementById('messages')
 const clientIdSpan = document.getElementById('clientId')
 
-// When connection is established
+// Cuando se establece la conexión
 socket.on('connect', () => {
   clientId = socket.id
   clientIdSpan.textContent = clientId
-  console.log(`Connected to server with ID: ${clientId}`)
+  console.log(`Conectado al servidor con ID: ${clientId}`)
   
-  // If we're in a game room, rejoin it and request Pokemon
+  // Si estamos en una sala de juego, volver a unirse y solicitar Pokemon
   if (window.location.pathname.startsWith('/room/')) {
     const roomId = window.location.pathname.split('/').pop()
     socket.emit('join_room', { roomId })
   }
 })
 
-// Create Room button handler
+// Manejador del botón Crear Sala
 createRoomBtn.addEventListener('click', () => {
   socket.emit('create_room')
-  console.log('Requesting to create a room...')
+  console.log('Solicitando crear una sala...')
 })
 
-// Join Room button handler
+// Manejador del botón Unirse a Sala
 joinRoomBtn.addEventListener('click', () => {
   const roomId = joinRoomInput.value.trim()
   if (roomId) {
     socket.emit('join_room', { roomId })
-    console.log(`Requesting to join room: ${roomId}`)
+    console.log(`Solicitando unirse a la sala: ${roomId}`)
   } else {
-    addMessage('Please enter a room ID', true)
+    addMessage('Por favor ingrese un ID de sala', true)
   }
 })
 
-// Say Hello button handler
-sayHelloBtn.addEventListener('click', () => {
-  if (currentRoomId) {
-    socket.emit('say_hello', { roomId: currentRoomId })
-    console.log(`Hello from ${clientId} in room ${currentRoomId}`)
-    addMessage(`You said: Hello!`)
-  }
-})
-
-// Ready button handler
+// Manejador del botón Listo
 readyBtn.addEventListener('click', () => {
   if (currentRoomId) {
     isReady = !isReady
     socket.emit('player_ready', { roomId: currentRoomId, isReady })
-    readyBtn.textContent = isReady ? 'Not Ready' : 'Ready'
+    readyBtn.textContent = isReady ? 'No Listo' : 'Listo'
     readyBtn.classList.toggle('secondary', isReady)
   }
 })
 
-// Leave Room button handler
+// Manejador del botón Salir de la Sala
 leaveRoomBtn.addEventListener('click', () => {
   if (currentRoomId) {
     socket.emit('leave_room', { roomId: currentRoomId })
@@ -80,55 +70,63 @@ leaveRoomBtn.addEventListener('click', () => {
   }
 })
 
-// Socket event handlers
+// Manejadores de eventos de Socket
 socket.on('room_created', (data) => {
-  console.log(`Room created with ID: ${data.roomId}`)
+  console.log(`Sala creada con ID: ${data.roomId}`)
   currentRoomId = data.roomId
-  roomIdSpan.textContent = currentRoomId
-  roomMembersP.textContent = `Members: You (${clientId})`
   
-  // Switch to room screen
-  lobbyScreen.classList.add('hidden')
-  roomScreen.classList.remove('hidden')
-  addMessage(`You created room: ${currentRoomId}`, true)
-})
-
-socket.on('joined_room', (data) => {
-  console.log(`Joined room: ${data.roomId} with ${data.members.length} members`)
-  currentRoomId = data.roomId
+  // Almacenar el ID de la sala en localStorage para acceso persistente
+  localStorage.setItem('currentRoomId', currentRoomId)
+  
   roomIdSpan.textContent = currentRoomId
   updateMembersList(data.members)
   
-  // Switch to room screen
+  // Cambiar a la pantalla de la sala
+  lobbyScreen.classList.add('hidden')
+  roomScreen.classList.remove('hidden')
+  addMessage(`Creaste la sala: ${currentRoomId}`, true)
+})
+
+socket.on('joined_room', (data) => {
+  console.log(`Te uniste a la sala: ${data.roomId} con ${data.members.length} miembros`)
+  currentRoomId = data.roomId
+  
+  // Almacenar el ID de la sala en localStorage para acceso persistente
+  localStorage.setItem('currentRoomId', currentRoomId)
+  
+  roomIdSpan.textContent = currentRoomId
+  updateMembersList(data.members)
+  
+  // Cambiar a la pantalla de la sala
   lobbyScreen.classList.add('hidden')
   roomScreen.classList.remove('hidden')
 
-  addMessage(`You joined room: ${currentRoomId}`, true)
+  addMessage(`Te uniste a la sala: ${currentRoomId}`, true)
 })
 
 socket.on('user_joined', (data) => {
-  console.log(`User ${data.userId} joined room ${data.roomId}`)
-  addMessage(`User ${data.userId} joined the room`, true)
+  console.log(`El usuario ${data.userId} se unió a la sala ${data.roomId}`)
+  addMessage(`El usuario ${data.userId} se unió a la sala`, true)
   
-  // Update members list if we're in this room
+  // Actualizar la lista de miembros si estamos en esta sala
   if (currentRoomId === data.roomId) {
     socket.emit('get_room_info', { roomId: currentRoomId })
   }
 })
 
 socket.on('user_left', (data) => {
-  console.log(`User ${data.userId} left room ${data.roomId}`)
-  addMessage(`User ${data.userId} left the room`, true)
+  console.log(`El usuario ${data.userId} salió de la sala ${data.roomId}`)
+  addMessage(`El usuario ${data.userId} salió de la sala`, true)
   
-  // Update members list if we're in this room
+  // Actualizar la lista de miembros si estamos en esta sala
   if (currentRoomId === data.roomId) {
     socket.emit('get_room_info', { roomId: currentRoomId })
   }
 })
 
 socket.on('hello_received', (data) => {
-  console.log(`Hello from ${data.userId} in room ${data.roomId}`)
-  addMessage(`${data.userId} says: Hello!`)
+  console.log(`Hola de ${data.userId} en la sala ${data.roomId}`)
+  addMessage(`${data.userId} dice: ¡Hola!`)
 })
 
 socket.on('room_info', (data) => {
@@ -141,7 +139,7 @@ socket.on('player_ready_update', (data) => {
   if (currentRoomId === data.roomId) {
     updateMembersList(data.members)
     if (data.allReady && data.gameStarted) {
-      // Switch to game screen
+      // Cambiar a la pantalla del juego
       lobbyScreen.classList.add('hidden')
       roomScreen.classList.add('hidden')
     }
@@ -150,49 +148,54 @@ socket.on('player_ready_update', (data) => {
 
 socket.on('game_started', (data) => {
   if (currentRoomId === data.roomId) {
-    console.log('Game started with Pokemon ID:', data.pokemonId)
+    // Enviar un log adicional al servidor sobre el cliente que recibió el ID de Pokemon
+    socket.emit('client_log', {
+      event: 'received_pokemon_id',
+      roomId: currentRoomId,
+      playerId: clientId,
+      pokemonId: data.pokemonId
+    })
     
-    // Fetch Pokemon data
+    // Obtener los datos del Pokemon
     ;(async () => {
       try {
-        console.log('Fetching Pokemon with ID:', data.pokemonId)
+        console.log('Obteniendo los datos del Pokemon con ID:', data.pokemonId)
         
-        // Fetch Pokemon data from browser
+        // Obtener los datos del Pokemon desde el navegador
         const pokemonResponse = await fetch(`https://pokeapi.co/api/v2/pokemon/${data.pokemonId}`)
         const pokemon = await pokemonResponse.json()
         
-        // Fetch species data
+        // Obtener los datos de la especie
         const speciesResponse = await fetch(pokemon.species.url)
         const species = await speciesResponse.json()
         
-        
-        // Fetch evolution chain
+        // Obtener la cadena de evolución
         const evolutionResponse = await fetch(species.evolution_chain.url)
         const evolutionChain = await evolutionResponse.json()
         
-        // Calculate evolution stage
+        // Calcular la etapa de evolución
         let evolutionStage = 1
         const chain = evolutionChain.chain
         
         if (chain.species.name === pokemon.name) {
-            evolutionStage = 1; // Forma base
+          evolutionStage = 1; // Forma base
         } else if (chain.evolves_to.length > 0) {
-            // Buscar en primera evolución
-            const firstEvo = chain.evolves_to.find(evo => evo.species.name === pokemon.name);
-            if (firstEvo) {
-                evolutionStage = 2;
-            } else {
-                // Buscar en segunda evolución
-                for (const evo of chain.evolves_to) {
-                    if (evo.evolves_to.some(finalEvo => finalEvo.species.name === pokemon.name)) {
-                        evolutionStage = 3;
-                        break;
-                    }
-                }
+          // Buscar en la primera evolución
+          const firstEvo = chain.evolves_to.find(evo => evo.species.name === pokemon.name);
+          if (firstEvo) {
+            evolutionStage = 2;
+          } else {
+            // Buscar en la segunda evolución
+            for (const evo of chain.evolves_to) {
+              if (evo.evolves_to.some(finalEvo => finalEvo.species.name === pokemon.name)) {
+                evolutionStage = 3;
+                break;
+              }
             }
+          }
         }
 
-        // Extract generation info from species data
+        // Extraer la información de la generación desde los datos de la especie
         const generation = species.generation.name.replace('generation-', '').toUpperCase();
 
         currentPokemonData = {
@@ -204,10 +207,10 @@ socket.on('game_started', (data) => {
           height: pokemon.height,
           habitat: species.habitat ? species.habitat.name : 'Desconocido',
           image: pokemon.sprites.front_default,
-          generation: generation  // Add the generation here
+          generation: generation  // Agregar la generación aquí
         }
         
-        // Update UI
+        // Actualizar la interfaz de usuario
         const pokemonImage = document.getElementById('pokemon-imagen')
         const pokemonInfo = document.getElementById('pokemon-info')
         
@@ -218,7 +221,7 @@ socket.on('game_started', (data) => {
             <p>Tipo 1: ${currentPokemonData.types[0]}</p>
             <p>Tipo 2: ${currentPokemonData.types[1] || 'N/A'}</p>
             <p>Color: ${currentPokemonData.color}</p>
-            <p>Etapa de Evolucion: ${currentPokemonData.evolutionStage}</p>
+            <p>Etapa de Evolución: ${currentPokemonData.evolutionStage}</p>
             <p>Peso: ${currentPokemonData.weight/10} kg</p>
             <p>Altura: ${currentPokemonData.height/10} m</p>
             <p>Habitat: ${currentPokemonData.habitat}</p>
@@ -231,22 +234,21 @@ socket.on('game_started', (data) => {
         
         window.location.href = "game.html";
       } catch (error) {
-        console.error('Error fetching Pokemon:', error)
+        console.error('Error obteniendo los datos del Pokemon:', error)
       }
     })()
   }
 })
 
-
-// Helper functions
+// Funciones auxiliares
 function updateMembersList(members) {
   const membersList = members.map(member => {
     const readyStatus = member.isReady ? 
-      '<span class="player-ready">✓ Ready</span>' : 
-      '<span class="player-not-ready">✗ Not Ready</span>'
+      '<span class="player-ready">✓ Listo</span>' : 
+      '<span class="player-not-ready">✗ No Listo</span>'
     return `${member.id} ${readyStatus}`
   }).join('<br>')
-  roomMembersP.innerHTML = `Members:<br>${membersList}`
+  roomMembersP.innerHTML = `Miembros:<br>${membersList}`
 }
 
 function leaveRoom() {
@@ -254,11 +256,11 @@ function leaveRoom() {
   isReady = false
   currentPokemonData = null  
   
-  // Switch back to lobby screen
+  // Cambiar a la pantalla del lobby
   roomScreen.classList.add('hidden')
   lobbyScreen.classList.remove('hidden')
   
-  addMessage('You left the room', true)
+  addMessage('Saliste de la sala', true)
 }
 
 function addMessage(text, isSystem = false) {
@@ -269,11 +271,11 @@ function addMessage(text, isSystem = false) {
   messagesDiv.scrollTop = messagesDiv.scrollHeight
 }
 
-// Handle game room initialization
+// Manejar la inicialización de la sala de juego
 if (window.location.pathname.startsWith('/room/')) {
   const roomId = window.location.pathname.split('/')[2]
   currentRoomId = roomId
   
-  // Join the room
+  // Unirse a la sala
   socket.emit('join_room', { roomId })
 }

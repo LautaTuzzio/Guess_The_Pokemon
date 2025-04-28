@@ -422,7 +422,7 @@ h1 {
 
 .header p{
     text-align: center;
-    font-family: Pokemon;
+    font-family: 'Text', Arial, sans-serif;
     font-size: clamp(14px, 3vw, 20px);
 }
 
@@ -438,10 +438,10 @@ h1 {
   font-weight: 400;
   color: #364067;
   text-align: center;
+  font-family: 'Text', Arial, sans-serif;
   padding-left: 10px;
   padding-right: 10px;
-  letter-spacing: 2px;
-  line-height: 1.2;
+  line-height: 1.5;
 }
 
 .title-container h1 {
@@ -463,9 +463,8 @@ h1 {
   border-radius: 8px;
   padding: 8px 16px;
   cursor: pointer;
-  z-index: 1000;
-  font-family: 'Text', Arial, sans-serif;
-  font-size: 16px;
+  z-index: 1000; 
+  font-size: 15px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.07);
   transition: background 0.2s, color 0.2s;
 }

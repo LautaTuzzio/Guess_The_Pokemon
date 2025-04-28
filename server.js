@@ -31,9 +31,9 @@ app.get('/room/:roomId', (req, res) => {
 
 // Socket.io connection handling
 io.on('connection', (socket) => {
-  console.log(`New client connected: ${socket.id}`)
+  console.log(`Nuevo cliente conectado: ${socket.id}`)
   
-  // Create a new room
+  // Crear una nueva sala
   socket.on('create_room', () => {
     const roomId = uuidv4().substring(0, 6) // Generate shorter room ID for convenience
     
@@ -49,29 +49,29 @@ io.on('connection', (socket) => {
       gameStarted: false
     }
     
-    console.log(`Room created: ${roomId} by ${socket.id}`)
+    console.log(`Sala creada: ${roomId} por ${socket.id}`)
     
-    // Send room ID back to the client
+    // Enviar ID de sala al cliente
     socket.emit('room_created', {
       roomId: roomId,
       members: rooms[roomId].members
     })
   })
   
-  // Join an existing room
+  // Unirse a una sala existente
   socket.on('join_room', (data) => {
     const roomId = data.roomId
     
-    // Check if room exists
+    // Verificar si la sala existe
     if (!rooms[roomId]) {
-      socket.emit('error', { message: 'Room does not exist' })
+      socket.emit('error', { message: 'La sala no existe' })
       return
     }
     
-    // Check if user is already in room
+    // Verificar si el usuario ya esta en la sala
     const existingMember = rooms[roomId].members.find(m => m.id === socket.id)
     if (existingMember) {
-      return // Already in room, do nothing
+      return // Ya esta en la sala, no hacer nada
     }
     
     // Join the socket to this room
@@ -83,22 +83,22 @@ io.on('connection', (socket) => {
       isReady: false
     })
     
-    console.log(`User ${socket.id} joined room: ${roomId}`)
+    console.log(`Usuario ${socket.id} se unio a la sala: ${roomId}`)
     
-    // Notify everyone in the room that a new user joined
+    // Notificar a todos en la sala que un nuevo usuario se unio
     io.to(roomId).emit('user_joined', {
       userId: socket.id,
       roomId: roomId
     })
     
-    // Confirm to the user they've joined
+    // Confirmar al usuario que se ha unido
     socket.emit('joined_room', {
       roomId: roomId,
       members: rooms[roomId].members
     })
   })
   
-  // Handle player ready status
+  // Manejar el estado de listo del jugador
   socket.on('player_ready', (data) => {
     const roomId = data.roomId
     const isReady = data.isReady
@@ -108,24 +108,25 @@ io.on('connection', (socket) => {
       return
     }
     
-    // Update player ready status
+    // Actualizar estado de listo del jugador
     const member = rooms[roomId].members.find(m => m.id === socket.id)
     if (member) {
       member.isReady = isReady
     }
     
-    // Check if all players are ready
+    // Verificar si todos los jugadores estan listos
     const allReady = rooms[roomId].members.every(m => m.isReady)
     
-    // If all players are ready and game hasn't started, generate Pokemon ID
+    // Si todos los jugadores estan listos y el juego no ha comenzado, generar ID de Pokemon
     if (allReady && !rooms[roomId].gameStarted) {
       
       rooms[roomId].pokemonId = Math.floor(Math.random() * 1025) + 1
       rooms[roomId].gameStarted = true
-      console.log(`Generated Pokemon ID ${rooms[roomId].pokemonId} for room ${roomId}`)
+      console.log(`ID de Pokemon generado ${rooms[roomId].pokemonId} para sala ${roomId}`)
+      console.log(`Sala ${roomId} ahora tiene ID de Pokemon: ${rooms[roomId].pokemonId}`)
     }
     
-    // Notify all players in the room about the ready status update
+    // Notificar a todos los jugadores en la sala sobre la actualizacion del estado
     io.to(roomId).emit('player_ready_update', {
       roomId: roomId,
       members: rooms[roomId].members,
@@ -133,7 +134,7 @@ io.on('connection', (socket) => {
       gameStarted: rooms[roomId].gameStarted
     })
 
-    // If game has started, send Pokemon ID separately
+    // Si el juego ha comenzado, enviar ID de Pokemon por separado
     if (rooms[roomId].gameStarted) {
       io.to(roomId).emit('game_started', {
         roomId: roomId,
@@ -142,7 +143,7 @@ io.on('connection', (socket) => {
     }
   })
   
-  // Send message within a room
+  // Enviar mensaje dentro de una sala
   socket.on('say_hello', (data) => {
     const roomId = data.roomId
     
@@ -151,16 +152,16 @@ io.on('connection', (socket) => {
       return
     }
     
-    console.log(`Server received: Hello from ${socket.id} in room ${roomId}`)
+    console.log(`Servidor recibio: Hola de ${socket.id} en sala ${roomId}`)
     
-    // Broadcast the message to everyone in the room
+    // Transmitir el mensaje a todos en la sala
     io.to(roomId).emit('hello_received', {
       userId: socket.id,
       roomId: roomId
     })
   })
 
-  // Get room information
+  // Obtener informacion de la sala
   socket.on('get_room_info', (data) => {
     const roomId = data.roomId
     if (rooms[roomId]) {
@@ -171,56 +172,105 @@ io.on('connection', (socket) => {
     }
   })
 
-  // Handle get Pokemon ID for room
+  // Manejar la obtencion del ID de Pokemon para la sala
   socket.on('get_pokemon_id', (data) => {
     const roomId = data.roomId
-    console.log('Received get_pokemon_id request for room:', roomId)
+    console.log('Solicitud get_pokemon_id recibida para sala:', roomId)
     if (rooms[roomId]) {
-      console.log('Found room, sending Pokemon ID:', rooms[roomId].pokemonId)
-      // Send to all sockets in the room
+      console.log('Sala encontrada, enviando ID de Pokemon:', rooms[roomId].pokemonId)
+      // Enviar a todos los sockets en la sala
       io.to(roomId).emit('pokemon_id', {
         roomId: roomId,
         pokemonId: rooms[roomId].pokemonId
       })
     } else {
-      console.log('Room not found:', roomId)
+      console.log('Sala no encontrada:', roomId)
+    }
+  })
+  
+  // Manejar las suposiciones de los jugadores
+  socket.on('player_guess', (data) => {
+    const { roomId, playerId, pokemonName } = data
+    console.log(`[EVENTO DE JUEGO] Usuario ${playerId} ha adivinado ${pokemonName} en sala ${roomId}`)
+  })
+  
+  // Manejar registros generales del cliente
+  socket.on('client_log', (data) => {
+    const { event, roomId, playerId, pokemonId } = data
+    if (event === 'received_pokemon_id') {
+      console.log(`[EVENTO DE JUEGO] Cliente ${playerId} recibio ID de Pokemon ${pokemonId} en sala ${roomId}`)
+    } else {
+      console.log(`[REGISTRO DE CLIENTE] ${JSON.stringify(data)}`)
     }
   })
 
-  // Handle disconnect
-  socket.on('disconnect', () => {
-    console.log(`Client disconnected: ${socket.id}`)
+  // Manejar victoria del jugador
+  socket.on('player_win', (data) => {
+    const { roomId, playerId, pokemonName } = data
+    console.log(`[EVENTO DE JUEGO] Jugador ${playerId} gano en sala ${roomId} adivinando ${pokemonName}`)
     
-    // Remove user from all rooms they were in
+    if (rooms[roomId]) {
+      // Transmitir dos veces para asegurar la entrega - usando transmision especifica de sala y global
+      io.to(roomId).emit('game_over', {
+        roomId: roomId,
+        winnerId: playerId,
+        pokemonName: pokemonName
+      })
+      
+      // Tambien transmitir un mensaje simple que es mas facil de mostrar
+      io.to(roomId).emit('someone_has_won', {
+        message: `Jugador ${playerId} ha ganado adivinando ${pokemonName}!`,
+        roomId: roomId,
+        winnerId: playerId,
+        pokemonName: pokemonName
+      })
+      
+      // Usar transmision global como respaldo
+      io.emit('global_game_event', {
+        type: 'win',
+        roomId: roomId,
+        winnerId: playerId,
+        pokemonName: pokemonName,
+        message: `Jugador ${playerId} ha ganado en sala ${roomId} adivinando ${pokemonName}!`
+      })
+      
+      console.log(`[EVENTO DE JUEGO] Notificado a todos los jugadores en sala ${roomId} que jugador ${playerId} gano`)
+    } else {
+      console.log('[EVENTO DE JUEGO] Sala no encontrada para notificacion de ganador:', roomId)
+    }
+  })
+
+  // Manejar desconexion
+  socket.on('disconnect', () => {
+    console.log(`Cliente desconectado: ${socket.id}`)
+    
+    // Eliminar usuario de todas las salas en las que estaba
     for (const roomId in rooms) {
       const room = rooms[roomId]
       
-      // If user was in this room
+      // Si el usuario estaba en esta sala
       const index = room.members.findIndex(m => m.id === socket.id)
       if (index !== -1) {
-        // Remove from members array
+        // Eliminar del array de miembros
         room.members.splice(index, 1)
         
-        // Notify others in the room
+        // Notificar a otros en la sala
         io.to(roomId).emit('user_left', {
           userId: socket.id,
           roomId: roomId
         })
         
-        console.log(`User ${socket.id} left room: ${roomId}`)
+        console.log(`Usuario ${socket.id} salio de la sala: ${roomId}`)
         
-        // If room is empty, delete it
-        if (room.members.length === 0) {
-          delete rooms[roomId]
-          console.log(`Room deleted: ${roomId}`)
-        }
+        // Mantener salas incluso cuando estan vacias para reconexion
+        console.log(`Sala ${roomId} ahora tiene ${room.members.length} miembros restantes`)
       }
     }
   })
 })
 
-// Start the server
+// Iniciar el servidor
 const PORT = process.env.PORT || 3000
 server.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`)
+  console.log(`Servidor ejecutandose en http://localhost:${PORT}`)
 })

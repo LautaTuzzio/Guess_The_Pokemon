@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Adivina el Pokémon</title>
+    <title>Pokémon | Adivina el Pokémon</title>
     <link rel="stylesheet" href="./game.css">
     <link rel="stylesheet" href="https://unpkg.com/intro.js/minified/introjs.min.css">
 </head>
@@ -26,7 +26,7 @@
             <div class="header">
                 <div class="title-container">
                     <h1>Adivina el Pokémon</h1>
-                    <p class="subtitle">¡Bienvenido! Se selecciono un pokemon aleatorio, tu trabajo es adivinar quien es, ¡ prueba escribiendo en la caja !</p>
+                    <p class="subtitle">¡Bienvenido al desafío! Hemos seleccionado un Pokémon aleatorio y tu misión es descubrir cuál es. ¡Escribe tu respuesta en la caja de búsqueda y guiate con las respuestas!</p>
                 </div>
                 <div class="hint-container">
                     <div class="hint" data-hint-number="1" data-attempts="3">
@@ -80,10 +80,11 @@
     <div id="win-modal-overlay" class="modal-overlay" style="display:none;"></div>
     <div id="win-modal" class="win-modal" style="display:none;">
       <div class="win-modal-content">
-        <h2 class="win-modal-title">¡Ganaste!</h2>
+        <h2 class="win-modal-title">¡Felicidades!</h2>
         <div class="win-modal-subtitle" id="win-modal-pokemon"></div>
         <div class="win-modal-buttons">
-          <button id="back-to-lobby-btn">Volver a la sala</button>
+          <button id="play-again-btn" class="win-button">Jugar otra vez</button>
+          <button id="back-to-lobby-btn" class="win-button">Volver al inicio</button>
         </div>
       </div>
     </div>

@@ -3,35 +3,37 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Guess The Pokemon</title>
+  <title>Adivina el Pokémon - Sala Multijugador</title>
   <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
-  <h1>Guess The Pokemon</h1>
-  <p>Your client ID: <span id="clientId">Connecting...</span></p>
+  <div class="pokemon-columns" id="pokemonColumns"></div>
   
   <div class="container">
+    <h1>Adivina el Pokémon - Sala Multijugador</h1>
+    <p>Tu ID de Cliente: <span id="clientId">Conectando...</span></p>
+    
     <div id="lobbyScreen" class="card">
-      <h2>Welcome to the Lobby</h2>
-      <p>Create a new room or join an existing one:</p>
-      <button id="createRoomBtn" class="button">Create New Room</button>
+      <h2>Sala Multijugador</h2>
+      <p>Crea una nueva sala o únete a una existente:</p>
+      <button id="createRoomBtn" class="button">Crear Sala</button>
       <div>
-        <input type="text" id="joinRoomInput" placeholder="Enter Room ID">
-        <button id="joinRoomBtn" class="button secondary">Join Room</button>
+        <input type="text" id="joinRoomInput" placeholder="Ingresa el ID de la Sala">
+        <button id="joinRoomBtn" class="button secondary">Unirse a Sala</button>
       </div>
     </div>
     
     <div id="roomScreen" class="card hidden">
-      <h2>Room: <span id="roomId">Loading...</span></h2>
-      <p id="roomMembers">Members: Loading...</p>
-      <button id="readyBtn" class="button">Ready</button>
-      <button id="sayHelloBtn" class="button">Say Hello</button>
-      <button id="leaveRoomBtn" class="button secondary">Leave Room</button>
+      <h2>Sala Actual: <span id="roomId">Cargando...</span></h2>
+      <p id="roomMembers">Miembros: Cargando...</p>
+      <button id="readyBtn" class="button">Listo</button>
+      <button id="leaveRoomBtn" class="button secondary">Salir de la Sala</button>
       
-      <h3>Messages:</h3>
+      <h3>Mensajes:</h3>
       <div id="messages"></div>
     </div>
   </div>
+  
   <script src="/socket.io/socket.io.js"></script>
   <script type="module" src="script.js"></script>
 </body>
