@@ -18,13 +18,16 @@ function showWinModal(winnerId, pokemonName) {
   const modal = document.getElementById('win-modal');
   const overlay = document.getElementById('win-modal-overlay');
   const subtitle = document.getElementById('win-modal-pokemon');
+  const title = document.querySelector('.win-modal-title');
   
   if (modal && overlay && subtitle) {
     // Personalizar mensaje dependiendo si es el jugador actual o no
     if (winnerId === socket.id) {
       subtitle.innerHTML = `<strong>¡Ganaste!</strong><br>El Pokémon era: ${pokemonName}`;
+      if (title) title.textContent = '¡Felicidades!';
     } else {
-      subtitle.innerHTML = `<strong>Jugador ${winnerId} ganó!</strong><br>El Pokémon era: ${pokemonName}`;
+      subtitle.innerHTML = `<strong>¡Otro jugador ha ganado!</strong><br>El Pokémon era: ${pokemonName}`;
+      if (title) title.textContent = 'Casi...';
     }
     
     modal.style.display = 'flex';
