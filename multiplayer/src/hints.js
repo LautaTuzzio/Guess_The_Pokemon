@@ -15,7 +15,25 @@ function initializeHints(currentPokemonData) {
     // Reset attempt count
     attemptCount = 0;
     hintsEnabled = [false, false, false];
-    pokemonData = currentPokemonData;
+    
+    // Verificar si los datos son un objeto (formato multiplayer) o un array (formato singleplayer)
+    if (currentPokemonData && typeof currentPokemonData === 'object' && !Array.isArray(currentPokemonData)) {
+        // Formato multiplayer (objeto)
+        pokemonData = [
+            currentPokemonData.name,
+            currentPokemonData.evolutionStage,
+            currentPokemonData.types[0],
+            currentPokemonData.types[1] || "None",
+            currentPokemonData.color,
+            currentPokemonData.generation,
+            currentPokemonData.weight,
+            currentPokemonData.height,
+            currentPokemonData.habitat
+        ];
+    } else {
+        // Formato singleplayer (array)
+        pokemonData = currentPokemonData;
+    }
     
     // Reset all hint elements
     resetHintElements();
@@ -232,19 +250,69 @@ function showSilhouettePopup() {
     popup.id = 'silhouette-popup';
     popup.className = 'silhouette-popup';
     
+    // Estilo para el popup
+    popup.style.position = 'fixed';
+    popup.style.top = '50%';
+    popup.style.left = '50%';
+    popup.style.transform = 'translate(-50%, -50%)';
+    popup.style.backgroundColor = 'white';
+    popup.style.padding = '20px';
+    popup.style.borderRadius = '10px';
+    popup.style.boxShadow = '0 4px 8px rgba(0,0,0,0.2)';
+    popup.style.zIndex = '9999';
+    popup.style.textAlign = 'center';
+    
     // Create close button
     const closeButton = document.createElement('button');
     closeButton.className = 'close-button';
     closeButton.innerHTML = '&times;';
+    
+    // Estilo para el botón de cerrar
+    closeButton.style.position = 'absolute';
+    closeButton.style.top = '10px';
+    closeButton.style.right = '10px';
+    closeButton.style.background = 'none';
+    closeButton.style.border = 'none';
+    closeButton.style.fontSize = '24px';
+    closeButton.style.cursor = 'pointer';
+    closeButton.style.color = '#333';
     closeButton.addEventListener('click', () => {
         popup.remove();
     });
     
     // Create silhouette image
     const silhouetteImg = document.createElement('img');
-    silhouetteImg.src = pokemonData[1]; // Pokemon sprite URL
+    
+    // Obtener URL de la imagen desde localStorage o de pokemonData
+    let imageUrl;
+    const rawPokemonData = JSON.parse(localStorage.getItem('pokemonInfo'));
+    
+    if (rawPokemonData && rawPokemonData.image) {
+        // Si tenemos el formato de objeto con la propiedad image
+        imageUrl = rawPokemonData.image;
+    } else if (pokemonData && Array.isArray(pokemonData) && pokemonData.length > 9) {
+        // Si tenemos el formato de array y contiene la imagen
+        imageUrl = pokemonData[9]; // Posición de la imagen en el array
+    } else {
+        // Fallback: intentar obtener la imagen por ID del Pokémon
+        const pokemonId = localStorage.getItem('pokemonId');
+        if (pokemonId) {
+            imageUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemonId}.png`;
+        } else {
+            console.error("No se pudo encontrar la imagen del Pokémon");
+            imageUrl = "../assets/images/Pokebola.png"; // Imagen por defecto
+        }
+    }
+    
+    silhouetteImg.src = imageUrl;
     silhouetteImg.alt = "Silueta del Pokémon";
     silhouetteImg.className = 'silhouette-image';
+    
+    // Aplicar estilos CSS para convertir la imagen en silueta
+    silhouetteImg.style.filter = 'brightness(0) saturate(100%)';
+    silhouetteImg.style.webkitFilter = 'brightness(0) saturate(100%)';
+    silhouetteImg.style.width = '150px';
+    silhouetteImg.style.height = '150px';
     
     // Create title
     const title = document.createElement('h3');

@@ -5,6 +5,9 @@ const socket = io()
 const randpokemonInfo = JSON.parse(localStorage.getItem('pokemonInfo'));
 console.log('Informacion Pokemon Aleatorio:', randpokemonInfo)
 
+// Inicializar sistema de pistas con el Pokemon aleatorio
+initializeHints(randpokemonInfo);
+
 // Escuchar eventos de fin de juego
 socket.on('game_over', (data) => {
   console.log(`Jugador con ID ${data.winnerId} gano el juego con ${data.pokemonName}!`);
