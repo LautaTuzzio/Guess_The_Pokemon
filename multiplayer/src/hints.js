@@ -1,18 +1,18 @@
 
-// Track the number of attempts
+// Contador de intentos
 let attemptCount = 0;
 let hintsEnabled = [false, false, false];
 let pokemonData = null;
 let activeTooltip = null;
-let openedPokeball = null; // Track the currently opened Pokeball
+let openedPokeball = null; // Seguimiento de la Pokebola actualmente abierta
 
 /**
- * Initialize the hint system with the current Pokemon data
- * @param {Array} currentPokemonData - The data of the Pokemon to guess
+ * Inicializa el sistema de pistas con los datos del Pokemon actual
+ * @param {Array} currentPokemonData - Los datos del Pokemon a adivinar
  */
 function initializeHints(currentPokemonData) {
-    console.log("Initializing hints with Pokemon:", currentPokemonData);
-    // Reset attempt count
+    console.log("Inicializando pistas con Pokemon:", currentPokemonData);
+    // Reiniciar contador de intentos
     attemptCount = 0;
     hintsEnabled = [false, false, false];
     
@@ -35,31 +35,32 @@ function initializeHints(currentPokemonData) {
         pokemonData = currentPokemonData;
     }
     
-    // Reset all hint elements
+    // Reiniciar todos los elementos de pista
     resetHintElements();
     
-    // Set up event listeners for the hint elements
+    // Configurar los event listeners para los elementos de pista
     setupHintListeners();
     
     // Add document click listener to close tooltips when clicking outside
+    // Agregar event listener de documento para cerrar tooltips al hacer clic fuera
     document.addEventListener('click', handleDocumentClick);
 }
 
 /**
- * Handle clicks on the document to close tooltips when clicking outside
- * @param {Event} event - The click event
+ * Maneja los clics en el documento para cerrar tooltips cuando se hace clic fuera
+ * @param {Event} event - El evento de clic
  */
 function handleDocumentClick(event) {
-    // If we clicked outside any hint element
+    // Si se hizo clic fuera de cualquier elemento de pista
     if (!event.target.closest('.hint') && activeTooltip) {
-        // Hide the active tooltip
+        // Ocultar el tooltip activo
         activeTooltip.classList.remove('show');
         activeTooltip = null;
     }
     
-    // If we clicked outside and there's an open Pokeball, close it
+    // Si se hizo clic fuera y hay una Pokebola abierta, cerrarla
     if (!event.target.closest('.hint') && openedPokeball) {
-        // Get the original source of the image
+        // Obtener la fuente original de la imagen
         const originalSrc = openedPokeball.getAttribute('data-original-src') || '/assets/images/pokeball.png';
         openedPokeball.src = originalSrc;
         openedPokeball = null;
@@ -67,19 +68,19 @@ function handleDocumentClick(event) {
 }
 
 /**
- * Reset all hint elements to their initial state
+ * Reinicia todos los elementos de pista a su estado inicial
  */
 function resetHintElements() {
     const hints = document.querySelectorAll('.hint');
     
     hints.forEach((hint, index) => {
-        // Remove enabled class and just-unlocked class
+        // Eliminar las clases enabled y just-unlocked
         hint.classList.remove('enabled', 'just-unlocked');
         
-        // Get the attempt threshold from the data attribute
+        // Obtener el umbral de intentos del atributo de datos
         const attempts = parseInt(hint.getAttribute('data-attempts'));
         
-        // Update tooltip text
+        // Actualizar texto del tooltip
         const tooltip = hint.querySelector('.tooltip');
         if (tooltip) {
             tooltip.textContent = `Se desbloquea en ${attempts} ${attempts === 1 ? "intento" : "intentos"}`;
@@ -87,10 +88,10 @@ function resetHintElements() {
         }
     });
     
-    // Reset active tooltip
+    // Reiniciar tooltip activo
     activeTooltip = null;
     
-    // Hide hint display if it exists
+    // Ocultar la visualizacion de pistas si existe
     const hintDisplay = document.getElementById('hint-display');
     if (hintDisplay) {
         hintDisplay.style.display = 'none';
@@ -98,79 +99,79 @@ function resetHintElements() {
 }
 
 /**
- * Set up event listeners for the hint elements
+ * Configurar los event listeners para los elementos de pista
  */
 function setupHintListeners() {
     const hints = document.querySelectorAll('.hint');
     
     hints.forEach((hint, index) => {
-        // Remove any existing event listeners
+        // Eliminar cualquier event listener existente
         const newHint = hint.cloneNode(true);
         hint.parentNode.replaceChild(newHint, hint);
         
-        // Add click event listener for all hints
+        // Agregar event listener de clic para todas las pistas
         newHint.addEventListener('click', (event) => {
-            event.stopPropagation(); // Prevent document click from immediately closing
+            event.stopPropagation(); // Evitar que el clic en el documento lo cierre inmediatamente
             
             const hintNumber = parseInt(newHint.getAttribute('data-hint-number')) - 1;
             const tooltip = newHint.querySelector('.tooltip');
             
-            // Only change the image if the hint is enabled
+            // Solo cambiar la imagen si la pista esta habilitada
             if (newHint.classList.contains('enabled')) {
-                // Change to open Pokeball when clicked on enabled hints
+                // Cambiar a Pokebola abierta cuando se hace clic en pistas habilitadas
                 const hintImg = newHint.querySelector('img');
                 if (hintImg) {
-                    // If there was a previously opened Pokeball, close it
+                    // Si habia una Pokebola abierta anteriormente, cerrarla
                     if (openedPokeball && openedPokeball !== hintImg) {
-                        // Get the original source of the image
+                        // Obtener la fuente original de la imagen
                         const originalSrc = openedPokeball.getAttribute('data-original-src') || '/assets/images/pokeball.png';
                         openedPokeball.src = originalSrc;
                     }
                     
-                    // Store the original image source if we haven't already
+                    // Almacenar la fuente original de la imagen si aun no lo hemos hecho
                     if (!hintImg.hasAttribute('data-original-src')) {
                         hintImg.setAttribute('data-original-src', hintImg.src);
                     }
                     
-                    // Open this Pokeball
+                    // Abrir esta Pokebola
                     hintImg.src = '/assets/images/pokebola-abierta.png';
                     
-                    // Update the currently opened Pokeball reference
+                    // Actualizar la referencia de la Pokebola actualmente abierta
                     openedPokeball = hintImg;
                 }
                 
-                // If this is the silhouette hint, show the popup
+                // Si esta es la pista de silueta, mostrar el popup
                 if (hintNumber === 2) {
                     showSilhouettePopup();
                     return;
                 }
                 
-                // For other hints, toggle the tooltip
+                // Para otras pistas, alternar el tooltip
                 if (tooltip) {
-                    // If there's already an active tooltip, hide it first
+                    // Si ya hay un tooltip activo, ocultarlo primero
                     if (activeTooltip && activeTooltip !== tooltip) {
                         activeTooltip.classList.remove('show');
                     }
                     
-                    // Toggle the current tooltip
+                    // Alternar el tooltip actual
                     tooltip.classList.toggle('show');
                     
-                    // Update active tooltip reference
+                    // Actualizar referencia del tooltip activo
                     activeTooltip = tooltip.classList.contains('show') ? tooltip : null;
                     
-                    // Update tooltip content if it's being shown
+                    // Actualizar contenido del tooltip si se esta mostrando
                     if (tooltip.classList.contains('show')) {
                         updateTooltipContent(tooltip, hintNumber);
                     }
                 }
             } else {
-                // If hint is not enabled, show remaining attempts
+                // Si la pista no esta habilitada, mostrar intentos restantes
                 const attempts = parseInt(newHint.getAttribute('data-attempts'));
                 const remaining = attempts - attemptCount;
                 
-                // Show the tooltip with remaining attempts
+                // Mostrar el tooltip con los intentos restantes
                 if (tooltip) {
-                    // If there's already an active tooltip, hide it first
+                    // Si ya hay un tooltip activo, ocultarlo primero
                     if (activeTooltip && activeTooltip !== tooltip) {
                         activeTooltip.classList.remove('show');
                     }
@@ -178,7 +179,7 @@ function setupHintListeners() {
                     tooltip.textContent = `Se desbloquea en ${remaining} ${remaining === 1 ? "intento" : "intentos"}`;
                     tooltip.classList.toggle('show');
                     
-                    // Update active tooltip reference
+                    // Actualizar referencia del tooltip activo
                     activeTooltip = tooltip.classList.contains('show') ? tooltip : null;
                 }
             }
@@ -187,9 +188,9 @@ function setupHintListeners() {
 }
 
 /**
- * Update tooltip content based on hint type
- * @param {Element} tooltip - The tooltip element
- * @param {Number} hintIndex - The index of the hint
+ * Actualiza el contenido del tooltip basado en el tipo de pista
+ * @param {Element} tooltip - El elemento tooltip
+ * @param {Number} hintIndex - El indice de la pista
  */
 function updateTooltipContent(tooltip, hintIndex) {
     if (!pokemonData) {
@@ -197,11 +198,11 @@ function updateTooltipContent(tooltip, hintIndex) {
         return;
     }
     
-    console.log("Updating tooltip content for hint", hintIndex);
+    console.log("Actualizando contenido del tooltip para la pista", hintIndex);
     console.log("Pokemon data:", pokemonData);
     
     switch(hintIndex) {
-        case 0: // Type hint
+        case 0: // Pista de tipo
             const type1 = pokemonData[2];
             const type2 = pokemonData[3] !== "None" ? pokemonData[3] : null;
             
@@ -213,13 +214,13 @@ function updateTooltipContent(tooltip, hintIndex) {
             tooltip.textContent = message;
             break;
             
-        case 1: // First letter hint
+        case 1: // Pista de primera letra
             const name = pokemonData[0];
             const firstLetter = name.charAt(0).toUpperCase();
             tooltip.innerHTML = `La nombre comienza con: <strong>${firstLetter}</strong>`;
             break;
             
-        case 2: // Silhouette hint
+        case 2: // Pista de silueta
             tooltip.textContent = "Toca para ver la silueta";
             break;
             
@@ -229,7 +230,7 @@ function updateTooltipContent(tooltip, hintIndex) {
 }
 
 /**
- * Show a popup with the Pokemon silhouette
+ * Muestra un popup con la silueta del Pokemon
  */
 function showSilhouettePopup() {
     if (!pokemonData) {
@@ -237,15 +238,15 @@ function showSilhouettePopup() {
         return;
     }
     
-    console.log("Showing silhouette popup with data:", pokemonData);
+    console.log("Mostrando popup de silueta con datos:", pokemonData);
     
-    // Remove any existing popup
+    // Eliminar cualquier popup existente
     const existingPopup = document.getElementById('silhouette-popup');
     if (existingPopup) {
         existingPopup.remove();
     }
     
-    // Create popup container
+    // Crear contenedor del popup
     const popup = document.createElement('div');
     popup.id = 'silhouette-popup';
     popup.className = 'silhouette-popup';
@@ -262,12 +263,12 @@ function showSilhouettePopup() {
     popup.style.zIndex = '9999';
     popup.style.textAlign = 'center';
     
-    // Create close button
+    // Crear boton de cerrar
     const closeButton = document.createElement('button');
     closeButton.className = 'close-button';
     closeButton.innerHTML = '&times;';
     
-    // Estilo para el botón de cerrar
+    // Estilo para el boton de cerrar
     closeButton.style.position = 'absolute';
     closeButton.style.top = '10px';
     closeButton.style.right = '10px';
@@ -280,7 +281,7 @@ function showSilhouettePopup() {
         popup.remove();
     });
     
-    // Create silhouette image
+    // Crear imagen de silueta
     const silhouetteImg = document.createElement('img');
     
     // Obtener URL de la imagen desde localStorage o de pokemonData
@@ -294,7 +295,7 @@ function showSilhouettePopup() {
         // Si tenemos el formato de array y contiene la imagen
         imageUrl = pokemonData[9]; // Posición de la imagen en el array
     } else {
-        // Fallback: intentar obtener la imagen por ID del Pokémon
+        // Fallback: intentar obtener la imagen por ID del Pokemon
         const pokemonId = localStorage.getItem('pokemonId');
         if (pokemonId) {
             imageUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemonId}.png`;
@@ -314,19 +315,19 @@ function showSilhouettePopup() {
     silhouetteImg.style.width = '150px';
     silhouetteImg.style.height = '150px';
     
-    // Create title
+    // Crear titulo
     const title = document.createElement('h3');
     title.textContent = "Silueta del Pokémon";
     
-    // Add elements to popup
+    // Agregar elementos al popup
     popup.appendChild(closeButton);
     popup.appendChild(title);
     popup.appendChild(silhouetteImg);
     
-    // Add popup to body
+    // Agregar popup al documento
     document.body.appendChild(popup);
     
-    // Close popup when clicking outside
+    // Cerrar popup cuando se hace clic fuera
     document.addEventListener('click', function closePopup(e) {
         if (!popup.contains(e.target) && e.target !== document.querySelector('.hint[data-hint-number="3"] img')) {
             popup.remove();
@@ -336,33 +337,33 @@ function showSilhouettePopup() {
 }
 
 /**
- * Increment the attempt counter and check if any new hints should be unlocked
+ * Incrementa el contador de intentos y verifica si se deben desbloquear nuevas pistas
  */
 function incrementAttempts() {
     attemptCount++;
-    console.log("Attempt count:", attemptCount);
+    console.log("Contador de intentos:", attemptCount);
     checkHintAvailability();
 }
 
 /**
- * Check if any hints should be unlocked based on the current attempt count
+ * Verifica si se deben desbloquear pistas basado en el numero actual de intentos
  */
 function checkHintAvailability() {
     const hints = document.querySelectorAll('.hint');
     
     hints.forEach((hint) => {
-        // Get the attempt threshold from the data attribute
+        // Obtener el umbral de intentos del atributo de datos
         const attempts = parseInt(hint.getAttribute('data-attempts'));
-        const hintNumber = parseInt(hint.getAttribute('data-hint-number')) - 1; // Convert to 0-based index
+        const hintNumber = parseInt(hint.getAttribute('data-hint-number')) - 1; // Convertir a indice base 0
         
-        // Check if this hint should be enabled
+        // Verificar si se deben desbloquear nuevas pistas
         if (attemptCount >= attempts && !hintsEnabled[hintNumber]) {
-            console.log(`Enabling hint ${hintNumber + 1} after ${attemptCount} attempts`);
+            console.log(`Habilitando pista ${hintNumber + 1} despues de ${attemptCount} intentos`);
             hintsEnabled[hintNumber] = true;
             enableHint(hint, hintNumber);
         }
         
-        // Update remaining attempts in tooltip if not yet enabled
+        // Actualizar intentos restantes en tooltip si no esta habilitada
         if (!hintsEnabled[hintNumber]) {
             const tooltip = hint.querySelector('.tooltip');
             if (tooltip) {
@@ -374,37 +375,37 @@ function checkHintAvailability() {
 }
 
 /**
- * Enable a specific hint
- * @param {Element} hintElement - The DOM element for the hint
- * @param {Number} hintIndex - The index of the hint
+ * Habilita una pista especifica
+ * @param {Element} hintElement - El elemento DOM para la pista
+ * @param {Number} hintIndex - El indice de la pista
  */
 function enableHint(hintElement, hintIndex) {
-    // Add enabled class
+    // Agregar clase enabled
     hintElement.classList.add('enabled');
     
-    // Add the just-unlocked class for vibration animation
+    // Agregar clase just-unlocked para animacion
     hintElement.classList.add('just-unlocked');
     
-    // Remove the just-unlocked class after the animation completes
+    // Eliminar clase just-unlocked despues de la animacion
     setTimeout(() => {
         hintElement.classList.remove('just-unlocked');
-    }, 600); // Match the duration of the vibrate animation
+    }, 600); // Coincidir con la duracion de la animacion de vibracion
     
-    // Update tooltip text based on the hint type
+    // Actualizar texto del tooltip basado en el tipo de pista
     const tooltipText = getTooltipText(hintIndex);
     const tooltip = hintElement.querySelector('.tooltip');
     if (tooltip) {
         tooltip.textContent = tooltipText;
     }
     
-    // Show a notification that a hint is available
+    // Mostrar notificacion de que una pista esta disponible
     const hintNumber = hintIndex + 1;
     const hintMessage = document.createElement('div');
     hintMessage.className = 'hint-notification';
     hintMessage.textContent = `¡Pista ${hintNumber} desbloqueada! Toca la Pokebola para verla.`;
     document.body.appendChild(hintMessage);
     
-    // Remove notification after 3 seconds
+    // Eliminar notificacion despues de 3 segundos
     setTimeout(() => {
         if (hintMessage.parentNode) {
             hintMessage.parentNode.removeChild(hintMessage);
@@ -413,9 +414,9 @@ function enableHint(hintElement, hintIndex) {
 }
 
 /**
- * Get the tooltip text for a specific hint
- * @param {Number} hintIndex - The index of the hint
- * @returns {String} - The tooltip text
+ * Obtener el texto del tooltip para una pista especifica
+ * @param {Number} hintIndex - El indice de la pista
+ * @returns {String} - El texto del tooltip
  */
 function getTooltipText(hintIndex) {
     switch(hintIndex) {
@@ -431,7 +432,7 @@ function getTooltipText(hintIndex) {
 }
 
 /**
- * Reset the hint system for a new game
+ * Reiniciar el sistema de pistas para un nuevo juego
  */
 function resetHints() {
     console.log("Resetting hints");
@@ -439,9 +440,9 @@ function resetHints() {
     hintsEnabled = [false, false, false];
     pokemonData = null;
     activeTooltip = null;
-    openedPokeball = null; // Reset opened Pokeball reference
+    openedPokeball = null; // Reiniciar referencia de Pokebola abierta
     
-    // Reset all hint elements
+    // Reiniciar todos los elementos de pista
     resetHintElements();
 }
 
