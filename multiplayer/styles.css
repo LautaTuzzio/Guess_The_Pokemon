@@ -1,47 +1,98 @@
+@font-face {
+  font-family: 'Pokemon';
+  src: url('../assets/font/Pokemon.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'Text';
+  src: url('../assets/font/Text.ttf') format('truetype');
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Arial', sans-serif;
+}
+
+h1 {
+  text-align: center;
+  font-family: Pokemon;
+  letter-spacing: 4px;
+  font-size: min(40px, 8vw);
+  color: #fec017;
+  -webkit-text-stroke-width: 2px;
+  -webkit-text-stroke-color: #364067;
+}
+
+h2 {
+  font-family: Text;
+}
+
 body {
   font-family: Arial, sans-serif;
   max-width: 800px;
   margin: 0 auto;
   padding: 20px;
 }
+
 .container {
   display: flex;
   flex-direction: column;
   gap: 20px;
+  border: 4px solid #fec017;
+  outline: 4px solid white;
+  outline-offset: -20px;
+  background-color: #53619c;
+  border-bottom-right-radius: 10%;
+  border-top-left-radius: 10%;
+  margin-bottom: 20px;
+  padding: 25px;
 }
-.card {
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 20px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+
+.card p {
+  font-family: Text;
+  margin-bottom: 20px;
 }
+
+.center {
+  text-align: center;
+}
+
 .button {
-  padding: 10px 15px;
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  border-radius: 4px;
+  color: #fff;
+  padding: 5px 10px 5px 10px;
+  margin: 10px;
+  font-size: 14px;
+  font-family: "Press Start 2P", system-ui;
+  border: 0;
+  box-shadow: 0px 5px black, 
+              0px -5px black, 
+              5px 0px black, 
+              -5px 0px black, 
+              0px 10px #00000038, 
+              5px 5px #00000038, 
+              -5px 5px #00000038, 
+              inset 0px 5px #ffffff36;
   cursor: pointer;
-  font-size: 16px;
-  margin-right: 10px;
-  margin-bottom: 10px;
+  font-family: Text;
+
 }
-.button:hover {
-  background-color: #45a049;
+
+button:active {
+  transform: translateY(5px);
+  box-shadow: 0px 5px black, 0px -5px black, 5px 0px black, -5px 0px black,inset 0px 5px #00000038;
 }
-.button.secondary {
-  background-color: #2196F3;
-}
-.button.secondary:hover {
-  background-color: #0b7dda;
-}
+
 .hidden {
   display: none;
 }
+
 .room-id {
   font-weight: bold;
   color: #2196F3;
 }
+
 #joinRoomInput {
   padding: 10px;
   font-size: 16px;
@@ -49,6 +100,7 @@ body {
   border-radius: 4px;
   margin-right: 10px;
 }
+
 #messages {
   margin-top: 20px;
   border: 1px solid #ddd;
@@ -56,23 +108,29 @@ body {
   height: 300px;
   overflow-y: auto;
 }
+
 .message {
   padding: 5px;
   margin-bottom: 5px;
 }
+
 .message:nth-child(odd) {
   background-color: #f2f2f2;
 }
+
 .system-message {
   font-style: italic;
   color: #666;
 }
+
 .player-ready {
   color: #4CAF50;
 }
+
 .player-not-ready {
   color: #f44336;
 }
+
 .pokemon-card {
   text-align: center;
   margin-top: 20px;
@@ -80,6 +138,7 @@ body {
   background-color: #f5f5f5;
   border-radius: 8px;
 }
+
 #pokemon-info {
   margin-top: 15px;
 }

@@ -20,12 +20,10 @@ const roomMembersP = document.getElementById('roomMembers')
 const leaveRoomBtn = document.getElementById('leaveRoomBtn')
 const readyBtn = document.getElementById('readyBtn')
 const messagesDiv = document.getElementById('messages')
-const clientIdSpan = document.getElementById('clientId')
 
 // Cuando se establece la conexión
 socket.on('connect', () => {
   clientId = socket.id
-  clientIdSpan.textContent = clientId
   console.log(`Conectado al servidor con ID: ${clientId}`)
   
   // Si estamos en una sala de juego, volver a unirse y solicitar Pokemon
