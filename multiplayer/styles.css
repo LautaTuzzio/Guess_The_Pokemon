@@ -73,7 +73,8 @@ body {
   padding: 5px 10px 5px 10px;
   margin: 10px;
   font-size: 14px;
-  font-family: "Press Start 2P", system-ui;
+  height: 6vh;
+  font-family: Text, system-ui;
   border: 0;
   box-shadow: 0px 5px black, 
               0px -5px black, 
@@ -156,5 +157,35 @@ button:active {
   display: flex;
   justify-content: center;
   align-items: center;
-  flex-direction: column;
+}
+
+::placeholder{
+  font-family: Text;
+  font-size: 0.6em;
+}
+
+input[type="text"]{
+  transform: translateY(5px);
+  box-shadow: 0px 5px black, 
+  0px -5px black, 
+  5px 0px black, 
+  -5px 0px black, 
+  0px 10px #00000038, 
+  5px 5px #00000038, 
+  -5px 5px #00000038, 
+  inset 0px 5px #ffffff36;
+  height: 6vh;  
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+@media (max-width: 600px){
+
+  .joinRoom{
+    flex-direction: column;
+  }
+
+  input[type="text"]{
+    margin-bottom: 15px;
+  }
 }
