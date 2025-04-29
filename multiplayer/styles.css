@@ -50,9 +50,18 @@ body {
   padding: 25px;
 }
 
+.card{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
 .card p {
   font-family: Text;
   margin-bottom: 20px;
+  text-align: center;
+  margin-top: 20px;
 }
 
 .center {
@@ -141,4 +150,11 @@ button:active {
 
 #pokemon-info {
   margin-top: 15px;
+}
+
+.joinRoom{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }
