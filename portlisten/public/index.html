@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lobby System</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .container {
+      display: flex;
+      gap: 20px;
+    }
+    .section {
+      flex: 1;
+      border: 1px solid #ccc;
+      padding: 15px;
+      border-radius: 5px;
+    }
+    .lobby-list {
+      list-style-type: none;
+      padding: 0;
+    }
+    .lobby-item {
+      padding: 10px;
+      margin: 5px 0;
+      background-color: #f0f0f0;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .lobby-item:hover {
+      background-color: #e0e0e0;
+    }
+    .user-list {
+      list-style-type: none;
+      padding: 0;
+    }
+    .user-item {
+      padding: 5px;
+      margin: 2px 0;
+      background-color: #f5f5f5;
+      border-radius: 3px;
+    }
+    .current-lobby {
+      padding: 10px;
+      border: 1px solid #aaa;
+      border-radius: 5px;
+      margin-bottom: 15px;
+    }
+    .host {
+      font-weight: bold;
+      color: #007bff;
+    }
+    button {
+      padding: 8px 15px;
+      margin: 5px 0;
+      cursor: pointer;
+    }
+    input {
+      padding: 8px;
+      margin: 5px 0;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>Lobby System</h1>
+  
+  <div id="login-section">
+    <h2>Enter Your Username</h2>
+    <input type="text" id="username-input" placeholder="Your username">
+    <button id="login-button">Enter</button>
+  </div>
+  
+  <div id="lobby-system" class="hidden">
+    <div class="container">
+      <div class="section">
+        <h2>Available Lobbies</h2>
+        <ul id="lobby-list" class="lobby-list"></ul>
+        
+        <h3>Create New Lobby</h3>
+        <input type="text" id="lobby-name" placeholder="Lobby name">
+        <button id="create-lobby">Create Lobby</button>
+      </div>
+      
+      <div class="section">
+        <div id="current-lobby-section" class="hidden">
+          <h2>Current Lobby</h2>
+          <div id="current-lobby" class="current-lobby">
+            <h3 id="lobby-title">Lobby Name</h3>
+            <p>Code: <span id="lobby-code"></span></p>
+            <h4>Users</h4>
+            <ul id="user-list" class="user-list"></ul>
+            <button id="leave-lobby">Leave Lobby</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // DOM Elements
+      const loginSection = document.getElementById('login-section');
+      const lobbySystem = document.getElementById('lobby-system');
+      const usernameInput = document.getElementById('username-input');
+      const loginButton = document.getElementById('login-button');
+      const lobbyList = document.getElementById('lobby-list');
+      const lobbyNameInput = document.getElementById('lobby-name');
+      const createLobbyButton = document.getElementById('create-lobby');
+      const currentLobbySection = document.getElementById('current-lobby-section');
+      const lobbyTitle = document.getElementById('lobby-title');
+      const lobbyCode = document.getElementById('lobby-code');
+      const userList = document.getElementById('user-list');
+      const leaveLobbyButton = document.getElementById('leave-lobby');
+      
+      // App state
+      let currentUser = null;
+      let socket = null;
+      let currentLobby = null;
+      
+      // Initialize Socket.io connection
+      function initializeSocket(username) {
+        socket = io();
+        currentUser = { username };
+        
+        // Socket event handlers
+        socket.on('connect', () => {
+          console.log('Connected to server');
+          currentUser.id = socket.id;
+        });
+        
+        socket.on('lobbiesUpdated', (lobbies) => {
+          renderLobbies(lobbies);
+        });
+        
+        socket.on('lobbyCreated', (lobby) => {
+          currentLobby = lobby;
+          renderCurrentLobby();
+        });
+        
+        socket.on('joinedLobby', (lobby) => {
+          currentLobby = lobby;
+          renderCurrentLobby();
+        });
+        
+        socket.on('userJoined', ({ lobbyId, user }) => {
+          if (currentLobby && currentLobby.id === lobbyId) {
+            currentLobby.users.push(user);
+            renderUserList();
+          }
+        });
+        
+        socket.on('userLeft', ({ lobbyId, userId }) => {
+          if (currentLobby && currentLobby.id === lobbyId) {
+            const userIndex = currentLobby.users.findIndex(u => u.id === userId);
+            if (userIndex !== -1) {
+              currentLobby.users.splice(userIndex, 1);
+              renderUserList();
+            }
+          }
+        });
+        
+        socket.on('newHost', ({ lobbyId, hostId }) => {
+          if (currentLobby && currentLobby.id === lobbyId) {
+            currentLobby.host = hostId;
+            renderUserList();
+          }
+        });
+        
+        socket.on('error', (error) => {
+          alert(error.message);
+        });
+      }
+      
+      // Render the list of available lobbies
+      function renderLobbies(lobbies) {
+        lobbyList.innerHTML = '';
+        
+        if (lobbies.length === 0) {
+          lobbyList.innerHTML = '<p>No lobbies available. Create one!</p>';
+          return;
+        }
+        
+        lobbies.forEach(lobby => {
+          const lobbyItem = document.createElement('li');
+          lobbyItem.className = 'lobby-item';
+          lobbyItem.innerHTML = `
+            <div><strong>${lobby.name}</strong> (${lobby.users.length} users)</div>
+            <div>Code: ${lobby.id}</div>
+          `;
+          
+          // If not already in this lobby, allow joining
+          if (!currentLobby || currentLobby.id !== lobby.id) {
+            lobbyItem.addEventListener('click', () => {
+              socket.emit('joinLobby', { lobbyId: lobby.id, username: currentUser.username });
+            });
+          } else {
+            lobbyItem.style.backgroundColor = '#d4edda';
+            lobbyItem.appendChild(document.createTextNode(' (You are here)'));
+          }
+          
+          lobbyList.appendChild(lobbyItem);
+        });
+      }
+      
+      // Render the current lobby view
+      function renderCurrentLobby() {
+        if (currentLobby) {
+          currentLobbySection.classList.remove('hidden');
+          lobbyTitle.textContent = currentLobby.name;
+          lobbyCode.textContent = currentLobby.id;
+          renderUserList();
+        } else {
+          currentLobbySection.classList.add('hidden');
+        }
+      }
+      
+      // Render the list of users in the current lobby
+      function renderUserList() {
+        userList.innerHTML = '';
+        
+        if (currentLobby && currentLobby.users) {
+          currentLobby.users.forEach(user => {
+            const userItem = document.createElement('li');
+            userItem.className = 'user-item';
+            userItem.textContent = user.username;
+            
+            if (user.id === currentLobby.host) {
+              userItem.classList.add('host');
+              userItem.textContent += ' (Host)';
+            }
+            
+            if (user.id === currentUser.id) {
+              userItem.textContent += ' (You)';
+            }
+            
+            userList.appendChild(userItem);
+          });
+        }
+      }
+      
+      // Event listeners
+      loginButton.addEventListener('click', () => {
+        const username = usernameInput.value.trim();
+        if (username) {
+          initializeSocket(username);
+          loginSection.classList.add('hidden');
+          lobbySystem.classList.remove('hidden');
+        } else {
+          alert('Please enter a username');
+        }
+      });
+      
+      createLobbyButton.addEventListener('click', () => {
+        const lobbyName = lobbyNameInput.value.trim();
+        if (lobbyName) {
+          socket.emit('createLobby', { name: lobbyName, username: currentUser.username });
+          lobbyNameInput.value = '';
+        } else {
+          alert('Please enter a lobby name');
+        }
+      });
+      
+      leaveLobbyButton.addEventListener('click', () => {
+        if (currentLobby) {
+          socket.emit('leaveLobby');
+          currentLobby = null;
+          renderCurrentLobby();
+        }
+      });
+      
+      // Allow pressing Enter to submit username
+      usernameInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+          loginButton.click();
+        }
+      });
+      
+      // Allow pressing Enter to submit lobby name
+      lobbyNameInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+          createLobbyButton.click();
+        }
+      });
+    });
+  </script>
+</body>
+</html>
