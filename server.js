@@ -5,7 +5,7 @@ const path = require('path')
 const { v4: uuidv4 } = require('uuid')
 
 // Default network settings
-const DEFAULT_HOST = '0.0.0.0' // Listen on all available network interfaces
+const DEFAULT_HOST = '192.180.0.150' // Listen on specific IP for webmin server
 const REQUIRED_PORT = 3150 // The specific port we want to enforce
 const DEFAULT_PORT = REQUIRED_PORT
 

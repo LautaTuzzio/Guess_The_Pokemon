@@ -8,7 +8,7 @@ const path = require('path');
 const app = express();
 const REQUIRED_PORT = 3150; // The specific port we want to enforce
 const DEFAULT_PORT = REQUIRED_PORT;
-const DEFAULT_HOST = '0.0.0.0'; // Listen on all network interfaces by default
+const DEFAULT_HOST = '192.180.0.150'; // Listen on specific IP for webmin server
 
 // Serve static files
 app.use(express.static(path.join(__dirname, 'public')));
