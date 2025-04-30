@@ -10,8 +10,11 @@ function updateSelection(items, selectedIndex) {
 }
 
 // Inicializa el autocompletado
-function initializeAutocomplete(input, dropdown, pokemonList) {
+function initializeAutocomplete(input, dropdown, pokemonList, guessedPokemonArray) {
     let selectedIndex = -1
+    
+    // Si no se proporciona un array de Pokémon adivinados, crear uno vacío
+    const guessedPokemon = guessedPokemonArray || window.guessedPokemon || [];
 
     // Maneja los cambios de entrada para el autocompletado
     input.addEventListener('input', async () => {
@@ -21,9 +24,16 @@ function initializeAutocomplete(input, dropdown, pokemonList) {
             return
         }
 
-        // Filtra y ordena los nombres de los pokemons
+        // Obtener la lista actualizada de Pokémon adivinados
+        const currentGuessedPokemon = window.guessedPokemon || guessedPokemon;
+
+        // Filtra y ordena los nombres de los pokemons, excluyendo los ya adivinados
         const matches = pokemonList
-            .filter(pokemon => pokemon.name.toLowerCase().startsWith(query))
+            .filter(pokemon => {
+                const pokemonName = pokemon.name.toLowerCase();
+                // Solo incluir si comienza con la consulta Y no está en la lista de adivinados
+                return pokemonName.startsWith(query) && !currentGuessedPokemon.includes(pokemonName);
+            })
             .sort((a, b) => a.id - b.id)
 
         if (matches.length > 0) {

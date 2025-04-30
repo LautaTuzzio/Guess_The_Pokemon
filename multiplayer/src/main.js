@@ -23,8 +23,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // Ocultar la pantalla de carga
         loadingScreen.style.display = 'none'
         
-        // Inicializa el autocompletado
-        initializeAutocomplete(input, dropdown, pokemonList)
+        // Inicializa el autocompletado pasando la referencia al array de Pokémon adivinados
+        initializeAutocomplete(input, dropdown, pokemonList, window.guessedPokemon)
         
         // Configura el evento para buscar Pokemon
         setupPokemonSearch()

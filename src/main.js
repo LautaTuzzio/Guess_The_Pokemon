@@ -4,6 +4,10 @@ import { initializeAutocomplete } from './autocomplete.js'
 import { createPokemonCard } from './ui.js'
 import { animatePokemonCard } from './animations.js'
 
+// Array global para almacenar los Pokémon ya adivinados
+// Lo hacemos global para que el módulo de autocompletado pueda acceder a él
+window.guessedPokemon = [];
+
 document.addEventListener('DOMContentLoaded', () => {
     const input = document.getElementById('pokemon-input')
     const pokemonListContainer = document.getElementById('pokemon-list')
@@ -23,8 +27,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // Ocultar la pantalla de carga
         loadingScreen.style.display = 'none'
         
-        // Inicializa el autocompletado
-        initializeAutocomplete(input, dropdown, pokemonList)
+        // Inicializa el autocompletado pasando la referencia al array de Pokémon adivinados
+        initializeAutocomplete(input, dropdown, pokemonList, window.guessedPokemon)
         
         // Configura el evento para buscar Pokemon
         setupPokemonSearch()
@@ -43,11 +47,19 @@ document.addEventListener('DOMContentLoaded', () => {
                     return
                 }
                 
+                // Verificar si el Pokémon ya ha sido adivinado
+                if (window.guessedPokemon.includes(pokemonName)) {
+                    errorMessage.textContent = 'Ya has adivinado este Pokémon. Intenta con otro.'
+                    return
+                }
+                
                 errorMessage.textContent = ''
                 loadingIndicator.textContent = 'Loading...'
                 
                 try {
                     const pokemonData = await fetchPokemonData(pokemonName)
+                    // Agregar el nombre del Pokémon a la lista de adivinados
+                    window.guessedPokemon.push(pokemonName)
                     const cardElements = createPokemonCard(pokemonData, pokemonListContainer)
                     animatePokemonCard(cardElements)
                     input.value = ''

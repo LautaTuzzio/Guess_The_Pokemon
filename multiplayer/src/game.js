@@ -2,6 +2,10 @@ import { fetchPokemonData } from './api.js'
 import { incrementAttempts,initializeHints } from './hints.js'
 const socket = io()
 
+// Array global para almacenar los Pokémon ya adivinados
+// Lo hacemos global para que el módulo de autocompletado pueda acceder a él
+window.guessedPokemon = [];
+
 const randpokemonInfo = JSON.parse(localStorage.getItem('pokemonInfo'));
 console.log('Informacion Pokemon Aleatorio:', randpokemonInfo)
 
@@ -258,18 +262,45 @@ function comparar(pokemonRandom, pokeInfo) {
 
 
 const input = document.getElementById('pokemoninput');
+const errorMessage = document.getElementById('error-message') || document.createElement('div');
+
+// Si el elemento error-message no existe en el DOM, crearlo y agregarlo
+if (!errorMessage.id) {
+  errorMessage.id = 'error-message';
+  errorMessage.className = 'error-message';
+  const searchContainer = document.querySelector('.search-container') || document.querySelector('.autocomplete-container');
+  if (searchContainer) {
+    searchContainer.after(errorMessage);
+  } else if (input) {
+    input.parentNode.insertBefore(errorMessage, input.nextSibling);
+  }
+}
+
 if (!input) {
   console.error("Elemento input no encontrado!");
 } else {
   input.addEventListener('keypress', async (event) => {
     if (event.key === 'Enter') {
       var pokemonName = input.value.trim().toLowerCase();
+      
+      // Verificar si el Pokémon ya ha sido adivinado
+      if (window.guessedPokemon.includes(pokemonName)) {
+        errorMessage.textContent = 'Ya has adivinado este Pokémon. Intenta con otro.';
+        return;
+      }
+      
       try {
         const pokeinfo = await fetchPokemonData(pokemonName);
         input.value = "";
+        errorMessage.textContent = '';
+        
+        // Agregar el nombre del Pokémon a la lista de adivinados
+        window.guessedPokemon.push(pokemonName);
+        
         console.log("Datos de Pokemon obtenidos:", pokeinfo);
         comparar(randpokemonInfo, pokeinfo);
       } catch (error) {
+        errorMessage.textContent = `Error: ${error.message}`;
         console.error("Error:", error);
       }
     }
