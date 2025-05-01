@@ -199,12 +199,127 @@ button:active {
   color: #666;
 }
 
+/* Modal styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.win-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1001;
+  background-color: #53619c;
+  border: 4px solid #fec017;
+  border-radius: 12px;
+  padding: 30px;
+  width: 90%;
+  max-width: 500px;
+  text-align: center;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+.win-modal-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.win-modal-title {
+  font-family: 'Pokemon', sans-serif;
+  font-size: 2.5rem;
+  color: #fec017;
+  margin-bottom: 20px;
+  -webkit-text-stroke-width: 2px;
+  -webkit-text-stroke-color: #364067;
+  letter-spacing: 6px;
+}
+
+.win-modal-subtitle {
+  font-family: 'Text', sans-serif;
+  font-size: 1.5rem;
+  color: white;
+  margin-bottom: 30px;
+}
+
+.win-modal-buttons {
+  display: flex;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.win-button {
+  color: #fff;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-family: Text, system-ui;
+  background-color: #364067;
+  border: 0;
+  box-shadow: 0px 5px black, 
+              0px -5px black, 
+              5px 0px black, 
+              -5px 0px black, 
+              0px 10px #00000038, 
+              5px 5px #00000038, 
+              -5px 5px #00000038, 
+              inset 0px 5px #ffffff36;
+  cursor: pointer;
+  border-radius: 12px;
+  transition: transform 0.1s, box-shadow 0.1s;
+}
+
+.win-button:active {
+  transform: translateY(5px);
+  box-shadow: 0px 5px black, 0px -5px black, 5px 0px black, -5px 0px black, inset 0px 5px #00000038;
+}
+
+/* Username input styles */
+.username-input-container {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.username-input {
+  width: 100%;
+  padding: 12px;
+  font-size: 18px;
+  border: 3px solid #364067;
+  border-radius: 8px;
+  background-color: #eef1ff;
+  color: #364067;
+  font-family: 'Text', sans-serif;
+  text-align: center;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.username-input:focus {
+  outline: none;
+  border-color: #fec017;
+  box-shadow: 0 0 8px #fec017;
+}
+
 .player-ready {
   color: #4CAF50;
 }
 
 .player-not-ready {
   color: #f44336;
+}
+
+.member-name {
+  font-family: 'Text', sans-serif;
+  font-size: 1.1rem;
 }
 
 .pokemon-card {
@@ -217,6 +332,86 @@ button:active {
 
 #pokemon-info {
   margin-top: 15px;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .container {
+    width: 95%;
+    max-width: 95%;
+    padding: 15px;
+  }
+  
+  h1 {
+    font-size: 32px;
+  }
+  
+  .win-modal {
+    width: 95%;
+    padding: 20px;
+  }
+  
+  .win-modal-title {
+    font-size: 2rem;
+  }
+  
+  .win-modal-subtitle {
+    font-size: 1.2rem;
+  }
+  
+  .button {
+    padding: 5px;
+    font-size: 14px;
+    height: auto;
+    min-height: 50px;
+    box-shadow: 0px 3px black, 
+              0px -3px black, 
+              3px 0px black, 
+              -3px 0px black, 
+              0px 6px #00000038, 
+              3px 3px #00000038, 
+              -3px 3px #00000038, 
+              inset 0px 3px #ffffff36;
+  }
+  
+  .room-actions {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .joinRoom {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+  }
+  
+  #joinRoomInput {
+    width: 100%;
+    margin-right: 0;
+    margin-bottom: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  h1 {
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+  
+  .win-modal-title {
+    font-size: 1.8rem;
+  }
+  
+  .win-modal-subtitle {
+    font-size: 1rem;
+  }
+  
+  .members-box {
+    min-width: auto;
+    width: 100%;
+    padding: 10px;
+  }
 }
 
 .joinRoom{

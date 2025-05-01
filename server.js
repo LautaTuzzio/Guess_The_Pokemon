@@ -34,8 +34,9 @@ io.on('connection', (socket) => {
   console.log(`Nuevo cliente conectado: ${socket.id}`)
   
   // Crear una nueva sala
-  socket.on('create_room', () => {
+  socket.on('create_room', (data) => {
     const roomId = uuidv4().substring(0, 6) // Generate shorter room ID for convenience
+    const username = data?.username || socket.id.substring(0, 8)
     
     // Join the socket to this room
     socket.join(roomId)
@@ -44,12 +45,13 @@ io.on('connection', (socket) => {
     rooms[roomId] = {
       members: [{
         id: socket.id,
+        username: username,
         isReady: false
       }],
       gameStarted: false
     }
     
-    console.log(`Sala creada: ${roomId} por ${socket.id}`)
+    console.log(`Sala creada: ${roomId} por ${username} (${socket.id})`)
     
     // Enviar ID de sala al cliente
     socket.emit('room_created', {
@@ -61,6 +63,7 @@ io.on('connection', (socket) => {
   // Unirse a una sala existente
   socket.on('join_room', (data) => {
     const roomId = data.roomId
+    const username = data?.username || socket.id.substring(0, 8)
     
     // Verificar si la sala existe
     if (!rooms[roomId]) {
@@ -74,16 +77,24 @@ io.on('connection', (socket) => {
       return // Ya esta en la sala, no hacer nada
     }
     
+    // Verificar si la sala ha alcanzado el límite máximo de 4 jugadores
+    if (rooms[roomId].members.length >= 4) {
+      socket.emit('room_full', { roomId: roomId })
+      console.log(`Usuario ${username} (${socket.id}) intentó unirse a la sala ${roomId}, pero está completa`)
+      return
+    }
+    
     // Join the socket to this room
     socket.join(roomId)
     
     // Add member to room
     rooms[roomId].members.push({
       id: socket.id,
+      username: username,
       isReady: false
     })
     
-    console.log(`Usuario ${socket.id} se unio a la sala: ${roomId}`)
+    console.log(`Usuario ${username} (${socket.id}) se unio a la sala: ${roomId}`)
     
     // Notificar a todos en la sala que un nuevo usuario se unio Y enviar la lista actualizada de miembros
     io.to(roomId).emit('room_members_update', {
@@ -99,6 +110,43 @@ io.on('connection', (socket) => {
   })
   
   // Manejar el estado de listo del jugador
+  // Manejar cuando un usuario abandona la sala manualmente
+  socket.on('leave_room', (data) => {
+    const roomId = data.roomId
+    
+    if (!roomId || !rooms[roomId]) {
+      return
+    }
+    
+    // Verificar si el usuario estaba en la sala
+    const index = rooms[roomId].members.findIndex(m => m.id === socket.id)
+    if (index !== -1) {
+      // Obtener el nombre de usuario antes de eliminar el miembro
+      const username = rooms[roomId].members[index].username || socket.id.substring(0, 8)
+      
+      // Remover el socket de la sala de Socket.IO
+      socket.leave(roomId)
+      
+      // Quitar el miembro del array de miembros
+      rooms[roomId].members.splice(index, 1)
+      
+      console.log(`Usuario ${username} (${socket.id}) abandonó manualmente la sala: ${roomId}`)
+      
+      // Notificar a otros en la sala
+      io.to(roomId).emit('user_left', {
+        userId: socket.id,
+        username: username,
+        roomId: roomId
+      })
+      
+      // Enviar la lista actualizada de miembros a todos los clientes en la sala
+      io.to(roomId).emit('room_members_update', {
+        roomId: roomId,
+        members: rooms[roomId].members
+      })
+    }
+  })
+  
   socket.on('player_ready', (data) => {
     const roomId = data.roomId
     const isReady = data.isReady
@@ -258,6 +306,12 @@ io.on('connection', (socket) => {
         io.to(roomId).emit('user_left', {
           userId: socket.id,
           roomId: roomId
+        })
+        
+        // Enviar la lista actualizada de miembros a todos los clientes en la sala
+        io.to(roomId).emit('room_members_update', {
+          roomId: roomId,
+          members: room.members
         })
         
         console.log(`Usuario ${socket.id} salio de la sala: ${roomId}`)
