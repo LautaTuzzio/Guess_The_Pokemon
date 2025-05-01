@@ -1,19 +1,13 @@
 import { fetchPokemonData } from '../src/api.js'
 
 // Conectar al servidor de Socket.io
-// Specify the host and port for the socket.io connection
-const socket = io('http://192.180.0.150:3150', {
-  reconnectionAttempts: 5,  // Try to reconnect 5 times
-  timeout: 10000,           // Connection timeout in ms
-  transports: ['websocket'], // Prefer WebSocket transport
-  autoConnect: true         // Automatically connect the socket
-})
-
+const socket = io()
 let clientId = ''
 let currentRoomId = null
 let isReady = false
 // Agregar una variable global para almacenar los datos del Pokemon actual
 let currentPokemonData = null
+
 // Elementos del DOM
 const lobbyScreen = document.getElementById('lobbyScreen')
 const roomScreen = document.getElementById('roomScreen')

@@ -4,45 +4,9 @@ const socketIo = require('socket.io')
 const path = require('path')
 const { v4: uuidv4 } = require('uuid')
 
-// Default network settings
-const DEFAULT_HOST = '192.180.0.150' // Listen on specific IP for webmin server
-const REQUIRED_PORT = 3150 // The specific port we want to enforce
-const DEFAULT_PORT = REQUIRED_PORT
-
-// Parse command line arguments
-const args = process.argv.slice(2)
-let HOST = DEFAULT_HOST
-let PORT = DEFAULT_PORT
-
-// Process command line arguments
-for (let i = 0; i < args.length; i++) {
-  if (args[i] === '--host' && i + 1 < args.length) {
-    HOST = args[i + 1]
-  } else if (args[i].startsWith('--host=')) {
-    HOST = args[i].split('=')[1]
-  } else if (args[i] === '--port' && i + 1 < args.length) {
-    PORT = parseInt(args[i + 1], 10)
-  } else if (args[i].startsWith('--port=')) {
-    PORT = parseInt(args[i].split('=')[1], 10)
-  }
-}
-
-// Check if the specified port matches the required port
-if (PORT !== REQUIRED_PORT) {
-  console.error(`Error: This application must run on port ${REQUIRED_PORT}`)
-  console.error(`You specified port ${PORT}, which is not allowed`)
-  process.exit(1)
-}
-
-// Create Express app and server
 const app = express()
 const server = http.createServer(app)
-const io = socketIo(server, {
-  cors: {
-    origin: '*', // Allow connections from any origin
-    methods: ['GET', 'POST']
-  }
-})
+const io = socketIo(server)
 
 // Track rooms and their members
 const rooms = {}
@@ -306,7 +270,7 @@ io.on('connection', (socket) => {
 })
 
 // Iniciar el servidor
-server.listen(PORT, HOST, () => {
-  console.log(`Servidor ejecutandose en http://${HOST === '0.0.0.0' ? 'localhost' : HOST}:${PORT}`)
-  console.log(`Para conectar desde otros dispositivos en la red, usa: http://<IP_ADDRESS>:${PORT}`)
+const PORT = process.env.PORT || 3000
+server.listen(PORT, () => {
+  console.log(`Servidor ejecutandose en http://localhost:${PORT}`)
 })
