@@ -31,10 +31,15 @@ h2 {
 
 body {
   font-family: Arial, sans-serif;
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 20px;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: none;
 }
+
 
 .container {
   display: flex;
@@ -48,13 +53,20 @@ body {
   border-top-left-radius: 10%;
   margin-bottom: 20px;
   padding: 25px;
+  width: 800px;
+  max-width: 90vw;
+  margin: 0 auto;
+  align-items: center;
+  text-align: center;
 }
+
 
 .card{
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  width: 100%;
 }
 
 .card p {
@@ -73,7 +85,7 @@ body {
   padding: 5px 10px 5px 10px;
   margin: 10px;
   font-size: 14px;
-  height: 6vh;
+  height: 60px;
   font-family: Text, system-ui;
   border: 0;
   box-shadow: 0px 5px black, 
@@ -86,7 +98,26 @@ body {
               inset 0px 5px #ffffff36;
   cursor: pointer;
   font-family: Text;
+  border-radius: 12px;
+  letter-spacing: 2px;
+  transition: transform 0.1s, box-shadow 0.1s;
+}
 
+#leaveRoomBtn.button {
+  background-color: #e74c3c;
+}
+
+#readyBtn.button {
+  background-color: #27ae60;
+}
+
+.room-actions {
+  display: flex;
+  flex-direction: row;
+  gap: 32px;
+  justify-content: center;
+  align-items: center;
+  margin: 24px 0 24px 0;
 }
 
 button:active {

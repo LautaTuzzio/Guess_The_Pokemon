@@ -5,8 +5,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>PokeGuesser - Multijugador</title>
   <link rel="stylesheet" href="./styles.css">
+  <style>
+    .video-background {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+      z-index: -1;
+      pointer-events: none;
+    }
+  </style>
 </head>
 <body>
+  <video class="video-background" autoplay loop muted playsinline>
+    <source src="../assets/images/Background.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
   <div class="pokemon-columns" id="pokemonColumns"></div>
   
   <div class="container">
@@ -23,13 +39,13 @@
     </div>
     
     <div id="roomScreen" class="card hidden">
+      <h1>PokeGuesser - Multijugador</h1>
       <h2>Sala Actual: <span id="roomId">Cargando...</span></h2>
       <p id="roomMembers">Miembros: Cargando...</p>
-      <button id="readyBtn" class="button">Listo</button>
-      <button id="leaveRoomBtn" class="button secondary">Salir de la Sala</button>
-      
-      <h3>Mensajes:</h3>
-      <div id="messages"></div>
+      <div class="room-actions">
+        <button id="leaveRoomBtn" class="button secondary">Salir de la Sala</button>
+        <button id="readyBtn" class="button">Listo</button>
+      </div>
     </div>
   </div>
   
