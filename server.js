@@ -85,10 +85,10 @@ io.on('connection', (socket) => {
     
     console.log(`Usuario ${socket.id} se unio a la sala: ${roomId}`)
     
-    // Notificar a todos en la sala que un nuevo usuario se unio
-    io.to(roomId).emit('user_joined', {
-      userId: socket.id,
-      roomId: roomId
+    // Notificar a todos en la sala que un nuevo usuario se unio Y enviar la lista actualizada de miembros
+    io.to(roomId).emit('room_members_update', {
+      roomId: roomId,
+      members: rooms[roomId].members
     })
     
     // Confirmar al usuario que se ha unido

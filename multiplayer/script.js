@@ -82,6 +82,7 @@ socket.on('room_created', (data) => {
   // Cambiar a la pantalla de la sala
   lobbyScreen.classList.add('hidden')
   roomScreen.classList.remove('hidden')
+  addMessage(`Creaste la sala: ${currentRoomId}`, true)
 })
 
 socket.on('joined_room', (data) => {
@@ -128,6 +129,13 @@ socket.on('hello_received', (data) => {
 
 socket.on('room_info', (data) => {
   if (currentRoomId === data.roomId) {
+    updateMembersList(data.members)
+  }
+})
+
+socket.on('room_members_update', (data) => {
+  if (currentRoomId === data.roomId) {
+    console.log('Actualizando lista de miembros:', data.members)
     updateMembersList(data.members)
   }
 })
@@ -258,6 +266,14 @@ function leaveRoom() {
   lobbyScreen.classList.remove('hidden')
   
   addMessage('Saliste de la sala', true)
+}
+
+function addMessage(text, isSystem = false) {
+  const messageDiv = document.createElement('div')
+  messageDiv.className = `message${isSystem ? ' system-message' : ''}`
+  messageDiv.textContent = text
+  messagesDiv.appendChild(messageDiv)
+  messagesDiv.scrollTop = messagesDiv.scrollHeight
 }
 
 // Manejar la inicialización de la sala de juego
