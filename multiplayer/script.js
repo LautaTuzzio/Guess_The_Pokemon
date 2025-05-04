@@ -39,7 +39,7 @@ usernameSubmitBtn.addEventListener('click', () => {
     hideUsernameModal()
     initializeSocket()
   } else {
-    alert('Por favor ingresa un nombre válido (mínimo 3 caracteres)')
+    showToast('Por favor ingresa un nombre válido (mínimo 3 caracteres)', true)
   }
 })
 
@@ -49,6 +49,22 @@ usernameInput.addEventListener('keypress', (e) => {
     usernameSubmitBtn.click()
   }
 })
+
+// Función para mostrar notificaciones toast
+function showToast(message, isError = false) {
+  // Crear el toast
+  const toast = document.createElement('div');
+  toast.className = isError ? 'error-notification' : 'hint-notification';
+  toast.textContent = message;
+  document.body.appendChild(toast);
+  
+  // Eliminar el toast después de 3 segundos (coincide con la duración de la animación)
+  setTimeout(() => {
+    if (toast.parentNode) {
+      toast.parentNode.removeChild(toast);
+    }
+  }, 3000);
+}
 
 // Siempre mostrar el modal de nombre de usuario al cargar la página
 showUsernameModal()

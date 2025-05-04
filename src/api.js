@@ -65,7 +65,7 @@ async function fetchPokemonData(pokemonName) {
         // Fetch de datos basicos del pokemon
         const pokemonResponse = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonName}`)
         if (!pokemonResponse.ok) {
-            throw new Error('Pokemon not found')
+            throw new Error('Pokémon no encontrado')
         }
         const pokemonData = await pokemonResponse.json()
         

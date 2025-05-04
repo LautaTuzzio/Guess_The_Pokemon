@@ -199,6 +199,60 @@ button:active {
   color: #666;
 }
 
+/* Toast Notification Styles */
+@keyframes slideInUp {
+  0% {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  10% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  90% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+}
+
+.hint-notification {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #00366d;
+  color: white;
+  padding: 15px 20px;
+  border-radius: 5px;
+  z-index: 99999;
+  animation: slideInUp 3s forwards;
+  font-family: 'Text', sans-serif;
+  max-width: 300px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  text-align: center;
+}
+
+.error-notification {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #c0392b;
+  color: white;
+  padding: 15px 20px;
+  border-radius: 5px;
+  z-index: 99999;
+  animation: slideInUp 3s forwards;
+  font-family: 'Text', sans-serif;
+  max-width: 300px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  text-align: center;
+}
+
 /* Modal styles */
 .modal-overlay {
   position: fixed;

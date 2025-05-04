@@ -4,6 +4,22 @@ import { initializeAutocomplete } from './autocomplete.js'
 import { createPokemonCard } from './ui.js'
 import { animatePokemonCard } from './animations.js'
 
+// Función para mostrar mensajes de error como toasts
+export function showErrorToast(message) {
+    // Crear el toast
+    const errorToast = document.createElement('div');
+    errorToast.className = 'error-notification';
+    errorToast.textContent = message;
+    document.body.appendChild(errorToast);
+    
+    // Eliminar el toast después de 3 segundos (coincide con la duración de la animación)
+    setTimeout(() => {
+        if (errorToast.parentNode) {
+            errorToast.parentNode.removeChild(errorToast);
+        }
+    }, 3000);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     const input = document.getElementById('pokemoninput')
     const pokemonListContainer = document.getElementById('pokemon-list')
@@ -39,7 +55,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 const pokemonName = input.value.trim().toLowerCase()
                 
                 if (!pokemonName) {
-                    errorMessage.textContent = 'Please enter a Pokemon name'
+                    showErrorToast('Por favor, ingresa un nombre de Pokémon')
+                    return
+                }
+                
+                // Verificar si el Pokémon ya ha sido adivinado
+                if (window.guessedPokemon && window.guessedPokemon.includes(pokemonName)) {
+                    showErrorToast('Ya has adivinado este Pokémon. Intenta con otro.')
                     return
                 }
                 
@@ -48,11 +70,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 try {
                     const pokemonData = await fetchPokemonData(pokemonName)
+                    
+                    // Initialize guessedPokemon array if it doesn't exist
+                    if (!window.guessedPokemon) {
+                        window.guessedPokemon = [];
+                    }
+                    
+                    // Add the Pokemon to the guessedPokemon array
+                    window.guessedPokemon.push(pokemonName)
+                    
                     const cardElements = createPokemonCard(pokemonData, pokemonListContainer)
                     animatePokemonCard(cardElements)
                     input.value = ''
                 } catch (error) {
-                    errorMessage.textContent = `Error: ${error.message}`
+                    showErrorToast(`Error: ${error.message}`)
                 } finally {
                     loadingIndicator.textContent = ''
                 }

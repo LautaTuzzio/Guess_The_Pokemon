@@ -4,6 +4,22 @@ import { initializeAutocomplete } from './autocomplete.js'
 import { createPokemonCard } from './ui.js'
 import { animatePokemonCard } from './animations.js'
 
+// Función simplificada para mostrar mensajes de error como toasts
+export function showErrorToast(message) {
+    // Crear el toast
+    const errorToast = document.createElement('div');
+    errorToast.className = 'error-notification';
+    errorToast.textContent = message;
+    document.body.appendChild(errorToast);
+    
+    // Eliminar el toast después de 3 segundos (coincide con la duración de la animación)
+    setTimeout(() => {
+        if (errorToast.parentNode) {
+            errorToast.parentNode.removeChild(errorToast);
+        }
+    }, 3000);
+}
+
 // Array global para almacenar los Pokémon ya adivinados
 // Lo hacemos global para que el módulo de autocompletado pueda acceder a él
 window.guessedPokemon = [];
@@ -43,13 +59,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 const pokemonName = input.value.trim().toLowerCase()
                 
                 if (!pokemonName) {
-                    errorMessage.textContent = 'Please enter a Pokemon name'
+                    showErrorToast('Por favor, ingresa un nombre de Pokémon')
                     return
                 }
                 
                 // Verificar si el Pokémon ya ha sido adivinado
                 if (window.guessedPokemon.includes(pokemonName)) {
-                    errorMessage.textContent = 'Ya has adivinado este Pokémon. Intenta con otro.'
+                    showErrorToast('Ya has adivinado este Pokémon. Intenta con otro.')
                     return
                 }
                 
@@ -64,7 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     animatePokemonCard(cardElements)
                     input.value = ''
                 } catch (error) {
-                    errorMessage.textContent = `Error: ${error.message}`
+                    showErrorToast(`Error: ${error.message}`)
                 } finally {
                     loadingIndicator.textContent = ''
                 }

@@ -1,5 +1,6 @@
 import { fetchPokemonData } from './api.js'
 import { incrementAttempts,initializeHints } from './hints.js'
+import { showErrorToast } from './main.js'
 const socket = io()
 
 // Array global para almacenar los Pokémon ya adivinados
@@ -283,9 +284,16 @@ if (!input) {
     if (event.key === 'Enter') {
       var pokemonName = input.value.trim().toLowerCase();
       
+      // Skip empty inputs
+      if (!pokemonName) {
+        showErrorToast('Por favor, ingresa un nombre de Pokémon');
+        return;
+      }
+
       // Verificar si el Pokémon ya ha sido adivinado
-      if (window.guessedPokemon.includes(pokemonName)) {
-        errorMessage.textContent = 'Ya has adivinado este Pokémon. Intenta con otro.';
+      if (window.guessedPokemon && window.guessedPokemon.includes(pokemonName)) {
+        showErrorToast('Ya has adivinado este Pokémon. Intenta con otro.');
+        console.log("Pokémon already guessed, not incrementing attempt counter");
         return;
       }
       
@@ -294,13 +302,12 @@ if (!input) {
         input.value = "";
         errorMessage.textContent = '';
         
-        // Agregar el nombre del Pokémon a la lista de adivinados
-        window.guessedPokemon.push(pokemonName);
-        
+        // No volvemos a agregar el Pokémon a la lista ya que main.js ya lo hace
+        // Solo registramos en consola para depuración
         console.log("Datos de Pokemon obtenidos:", pokeinfo);
         comparar(randpokemonInfo, pokeinfo);
       } catch (error) {
-        errorMessage.textContent = `Error: ${error.message}`;
+        showErrorToast(`Error: ${error.message}`);
         console.error("Error:", error);
       }
     }

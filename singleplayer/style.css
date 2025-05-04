@@ -461,6 +461,7 @@ h1 {
   color: #364067;
   font-weight: bold;
   border-radius: 8px;
+  font-family: Text;
   padding: 8px 16px;
   cursor: pointer;
   z-index: 1000; 
@@ -509,6 +510,7 @@ h1 {
 .hint-label {
     margin-top: 5px;
     font-family: 'Pokemon';
+    letter-spacing: 2px;
     font-size: clamp(12px, 2.5vw, 16px);
     color: #364067;
 }
@@ -615,18 +617,36 @@ h1 {
     padding: 10px 20px;
     border-radius: 5px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    z-index: 9999;
+    z-index: 99999;
     font-weight: bold;
-    animation: slideIn 3s ease-in-out;
+    animation: slideInUp 3s ease-in-out;
     text-align: center;
     max-width: 300px;
+    font-family: 'Text', Arial, sans-serif;
 }
 
-@keyframes slideIn {
-    0% { opacity: 0; transform: translateX(100px); }
-    15% { opacity: 1; transform: translateX(0); }
-    85% { opacity: 1; transform: translateX(0); }
-    100% { opacity: 0; transform: translateX(100px); }
+@keyframes slideInUp {
+    0% { opacity: 0; transform: translateY(100px); }
+    15% { opacity: 1; transform: translateY(0); }
+    85% { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(100px); }
+}
+
+.error-notification {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #e74c3c;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 99999;
+    font-weight: bold;
+    animation: slideInUp 3s ease-in-out;
+    text-align: center;
+    max-width: 300px;
+    font-family: 'Text', Arial, sans-serif;
 }
 
 .silhouette-popup {

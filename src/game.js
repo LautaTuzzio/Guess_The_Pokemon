@@ -265,6 +265,18 @@ if (!input) {
   input.addEventListener('keypress', async (event) => { 
     if (event.key === 'Enter') { 
       var pokemonName = input.value.trim().toLowerCase();
+      
+      // Skip empty inputs
+      if (!pokemonName) {
+        return;
+      }
+      
+      // Check if the Pokémon has already been guessed
+      if (window.guessedPokemon && window.guessedPokemon.includes(pokemonName)) {
+        console.log("Pokémon already guessed, not incrementing attempt counter");
+        return;
+      }
+      
       try {
         const pokeinfo = await fetchPokemonData(pokemonName);
         console.log("Fetched Pokemon data:", pokeinfo);

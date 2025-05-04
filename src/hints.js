@@ -1,3 +1,4 @@
+import { showErrorToast } from './main.js';
 
 // Track the number of attempts
 let attemptCount = 0;
@@ -5,6 +6,22 @@ let hintsEnabled = [false, false, false];
 let pokemonData = null;
 let activeTooltip = null;
 let openedPokeball = null; // Track the currently opened Pokeball
+
+// Función simplificada para mostrar mensajes de pistas como toasts
+function showHintToast(message) {
+    // Crear el toast
+    const hintToast = document.createElement('div');
+    hintToast.className = 'hint-notification';
+    hintToast.textContent = message;
+    document.body.appendChild(hintToast);
+    
+    // Eliminar el toast después de 3 segundos (coincide con la duración de la animación)
+    setTimeout(() => {
+        if (hintToast.parentNode) {
+            hintToast.parentNode.removeChild(hintToast);
+        }
+    }, 3000);
+}
 
 /**
  * Initialize the hint system with the current Pokemon data
@@ -331,17 +348,7 @@ function enableHint(hintElement, hintIndex) {
     
     // Show a notification that a hint is available
     const hintNumber = hintIndex + 1;
-    const hintMessage = document.createElement('div');
-    hintMessage.className = 'hint-notification';
-    hintMessage.textContent = `¡Pista ${hintNumber} desbloqueada! Toca la Pokebola para verla.`;
-    document.body.appendChild(hintMessage);
-    
-    // Remove notification after 3 seconds
-    setTimeout(() => {
-        if (hintMessage.parentNode) {
-            hintMessage.parentNode.removeChild(hintMessage);
-        }
-    }, 3000);
+    showHintToast(`¡Pista ${hintNumber} desbloqueada! Toca la Pokebola para verla.`);
 }
 
 /**
