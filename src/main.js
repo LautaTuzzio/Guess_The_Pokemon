@@ -1,5 +1,5 @@
 // Punto de entrada principal para importar e inicializar los modulos
-import { fetchAllPokemon, fetchPokemonData } from './api.js'
+import { fetchPokemonData } from './api.js'
 import { initializeAutocomplete } from './autocomplete.js'
 import { createPokemonCard } from './ui.js'
 import { animatePokemonCard } from './animations.js'
@@ -37,14 +37,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Inicializa la aplicacion
     async function initializeApp() {
-        // Carga todos los Pokemon
-        pokemonList = await fetchAllPokemon(loadingProgress)
+        // Simulamos una carga rápida
+        for (let i = 0; i <= 100; i += 10) {
+            loadingProgress.textContent = `${i}%, Preparando el juego...`
+            await new Promise(resolve => setTimeout(resolve, 100))
+        }
         
         // Ocultar la pantalla de carga
         loadingScreen.style.display = 'none'
         
-        // Inicializa el autocompletado pasando la referencia al array de Pokémon adivinados
-        initializeAutocomplete(input, dropdown, pokemonList, window.guessedPokemon)
+        // Inicializa el autocompletado con el nuevo enfoque (no necesita la lista completa de Pokémon)
+        initializeAutocomplete(input, dropdown, null, window.guessedPokemon)
         
         // Configura el evento para buscar Pokemon
         setupPokemonSearch()

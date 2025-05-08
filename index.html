@@ -48,69 +48,6 @@
   </div>
 </body>
 
-<script>
-const body = document.getElementById("body")
-const columnsContainer = document.getElementById("pokemonColumns")
 
-const numberOfColumns = Math.floor(window.innerWidth / 150)
-const screenHeight = window.innerHeight
-const spriteHeight = 96 + 8
-const pokemonPerColumn = Math.ceil((screenHeight * 2) / spriteHeight)
-
-const getRandomPokemonId = () => Math.floor(Math.random() * 1025) + 1
-
-async function createPokemonSprite(pokemonId) {
-    return new Promise((resolve, reject) => {
-        const sprite = document.createElement('img')
-        sprite.className = 'pokemon-sprite'
-        sprite.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemonId}.png`
-        
-        sprite.onload = () => resolve(sprite)
-        sprite.onerror = () => reject(new Error(`Failed to load Pokemon #${pokemonId}`))
-    })
-}
-
-async function createPokemonColumn() {
-    const column = document.createElement('div')
-    column.className = 'pokemon-column'
-    
-    const sprites = []
-    for (let i = 0; i < pokemonPerColumn; i++) {
-        const pokemonId = getRandomPokemonId()
-        try {
-            const sprite = await createPokemonSprite(pokemonId)
-            sprites.push(sprite)
-        } catch (error) {
-            console.log(error.message) 
-        }
-    }
-    
-    if (sprites.length > 0) {
-        sprites.forEach(sprite => {
-            column.appendChild(sprite)
-        })
-        sprites.forEach(sprite => {
-            column.appendChild(sprite.cloneNode(true))
-        })
-    }
-    
-    return column
-}
-
-async function initializeColumns() {
-    const columnPromises = []
-    for (let i = 0; i < numberOfColumns; i++) {
-        columnPromises.push(createPokemonColumn())
-    }
-    
-    const columns = await Promise.all(columnPromises)
-    columns.forEach(column => {
-        columnsContainer.appendChild(column)
-    })
-}
-
-initializeColumns();
-
-</script>
 
 </html>

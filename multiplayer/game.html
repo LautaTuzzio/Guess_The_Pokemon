@@ -118,55 +118,6 @@
         };
     </script>
 
-    <script>
-        const body = document.getElementById("body")
-        const columnsContainer = document.getElementById("pokemonColumns")
-
-        const numberOfColumns = Math.floor(window.innerWidth / 150)
-        const screenHeight = window.innerHeight
-        const spriteHeight = 96 + 8
-        const pokemonPerColumn = Math.ceil((screenHeight * 2) / spriteHeight)
-
-        const getRandomPokemonId = () => Math.floor(Math.random() * 1025) + 1
-
-        async function createPokemonSprite(pokemonId) {
-            const sprite = document.createElement('img')
-            sprite.className = 'pokemon-sprite'
-            sprite.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemonId}.png`
-            return sprite
-        }
-
-        async function createPokemonColumn() {
-            const column = document.createElement('div')
-            column.className = 'pokemon-column'
-
-            const sprites = []
-            for (let i = 0; i < pokemonPerColumn; i++) {
-                const pokemonId = getRandomPokemonId()
-                const sprite = await createPokemonSprite(pokemonId)
-                sprites.push(sprite)
-            }
-
-            sprites.forEach(sprite => {
-                column.appendChild(sprite)
-            })
-            sprites.forEach(sprite => {
-                column.appendChild(sprite.cloneNode(true))
-            })
-
-            return column
-        }
-
-        async function initializeColumns() {
-            for (let i = 0; i < numberOfColumns; i++) {
-                const column = await createPokemonColumn()
-                columnsContainer.appendChild(column)
-            }
-        }
-
-        initializeColumns();
-
-    </script>
     <script src="/socket.io/socket.io.js"></script>
     <script type="module" src="./src/game.js"></script>
     <script type="module" src="./src/main.js"></script>
