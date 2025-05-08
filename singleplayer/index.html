@@ -16,8 +16,8 @@
     <div class="pokemon-columns" id="pokemonColumns"></div>
 
     <div class="loading-screen" id="loading-screen">
-        <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png" alt="Cargando..."
-            class="pokeball">
+        <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png"
+            alt="Cargando..." class="pokeball">
         <div class="progress" id="loading-progress">0%, Llamando a los Pokemons.</div>
     </div>
 
@@ -26,7 +26,9 @@
             <div class="header">
                 <div class="title-container">
                     <h1>Adivina el Pokémon</h1>
-                <p class="subtitle">¡Un Pokémon salvaje ha aparecido en la hierba alta! Usa tus habilidades de detective para descubrir quién es. ¡Adivina su nombre, compara sus características y convierte en el mejor Maestro Pokémon!</p>
+                    <p class="subtitle">¡Un Pokémon salvaje ha aparecido en la hierba alta! Usa tus habilidades de
+                        detective para descubrir quién es. ¡Adivina su nombre, compara sus características y convierte
+                        en el mejor Maestro Pokémon!</p>
                 </div>
                 <div class="hint-container">
                     <div class="hint" data-hint-number="1" data-attempts="3">
@@ -48,7 +50,8 @@
             </div>
             <div class="search-container">
                 <div class="autocomplete-container">
-                    <input type="text" id="pokemon-input" placeholder="Escribe el nombre de un pokémon" autocomplete="off">
+                    <input type="text" id="pokemon-input" placeholder="Escribe el nombre de un pokémon"
+                        autocomplete="off">
                     <div id="autocomplete-dropdown" class="autocomplete-dropdown"></div>
                 </div>
             </div>
@@ -79,43 +82,43 @@
 
     <div id="win-modal-overlay" class="modal-overlay" style="display:none;"></div>
     <div id="win-modal" class="win-modal" style="display:none;">
-      <div class="win-modal-content">
-        <h2 class="win-modal-title">¡Ganaste!</h2>
-        <div class="win-modal-subtitle" id="win-modal-pokemon"></div>
-        <div class="win-modal-buttons">
-          <button id="play-again-btn">Jugar de nuevo</button>
-          <button id="back-to-lobby-btn">Volver a la sala</button>
+        <div class="win-modal-content">
+            <h2 class="win-modal-title">¡Ganaste!</h2>
+            <div class="win-modal-subtitle" id="win-modal-pokemon"></div>
+            <div class="win-modal-buttons">
+                <button id="play-again-btn">Jugar de nuevo</button>
+                <button id="back-to-lobby-btn">Volver a la sala</button>
+            </div>
         </div>
-      </div>
     </div>
 
     <script type="module" src="../src/main.js"></script>
     <script type="module" src="../src/game.js"></script>
     <script src="https://unpkg.com/intro.js/minified/intro.min.js"></script>
     <script>
-        document.getElementById('how-to-play').onclick = function() {
-          introJs().setOptions({
-            steps: [
-              {
-                intro: "¡Bienvenido a Adivina el Pokémon! Te mostraré cómo jugar."
-              },
-              {
-                element: document.querySelector('.hint-container'),
-                intro: "Aquí puedes ver las pistas. Se desbloquean a medida que haces intentos."
-              },
-              {
-                element: document.querySelector('#pokemon-input'),
-                intro: "Escribe aquí el nombre de un Pokémon para adivinar."
-              },
-              {
-                element: document.querySelector('.footer-explanation'),
-                intro: "Aquí puedes ver el significado de los colores: <br><b>Rojo</b>: incorrecto, <br><b>Amarillo</b>: parcialmente correcto, <br><b>Verde</b>: correcto."
-              }
-            ],
-            nextLabel: 'Siguiente',
-            prevLabel: 'Anterior',
-            doneLabel: '¡Entendido!'
-          }).start();
+        document.getElementById('how-to-play').onclick = function () {
+            introJs().setOptions({
+                steps: [
+                    {
+                        intro: "¡Bienvenido a Adivina el Pokémon! Te mostraré cómo jugar."
+                    },
+                    {
+                        element: document.querySelector('.hint-container'),
+                        intro: "Aquí puedes ver las pistas. Se desbloquean a medida que haces intentos."
+                    },
+                    {
+                        element: document.querySelector('#pokemon-input'),
+                        intro: "Escribe aquí el nombre de un Pokémon para adivinar."
+                    },
+                    {
+                        element: document.querySelector('.footer-explanation'),
+                        intro: "Aquí puedes ver el significado de los colores: <br><b>Rojo</b>: incorrecto, <br><b>Amarillo</b>: parcialmente correcto, <br><b>Verde</b>: correcto."
+                    }
+                ],
+                nextLabel: 'Siguiente',
+                prevLabel: 'Anterior',
+                doneLabel: '¡Entendido!'
+            }).start();
         };
     </script>
 
@@ -131,10 +134,14 @@
         const getRandomPokemonId = () => Math.floor(Math.random() * 1025) + 1
 
         async function createPokemonSprite(pokemonId) {
-            const sprite = document.createElement('img')
-            sprite.className = 'pokemon-sprite'
-            sprite.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemonId}.png`
-            return sprite
+            return new Promise((resolve, reject) => {
+                const sprite = document.createElement('img')
+                sprite.className = 'pokemon-sprite'
+                sprite.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemonId}.png`
+
+                sprite.onload = () => resolve(sprite)
+                sprite.onerror = () => reject(new Error(`Failed to load Pokemon #${pokemonId}`))
+            })
         }
 
         async function createPokemonColumn() {
@@ -144,28 +151,39 @@
             const sprites = []
             for (let i = 0; i < pokemonPerColumn; i++) {
                 const pokemonId = getRandomPokemonId()
-                const sprite = await createPokemonSprite(pokemonId)
-                sprites.push(sprite)
+                try {
+                    const sprite = await createPokemonSprite(pokemonId)
+                    sprites.push(sprite)
+                } catch (error) {
+                    console.log(error.message)
+                }
             }
 
-            sprites.forEach(sprite => {
-                column.appendChild(sprite)
-            })
-            sprites.forEach(sprite => {
-                column.appendChild(sprite.cloneNode(true))
-            })
+            if (sprites.length > 0) {
+                sprites.forEach(sprite => {
+                    column.appendChild(sprite)
+                })
+                sprites.forEach(sprite => {
+                    column.appendChild(sprite.cloneNode(true))
+                })
+            }
 
             return column
         }
 
         async function initializeColumns() {
+            const columnPromises = []
             for (let i = 0; i < numberOfColumns; i++) {
-                const column = await createPokemonColumn()
-                columnsContainer.appendChild(column)
+                columnPromises.push(createPokemonColumn())
             }
-        }
 
+            const columns = await Promise.all(columnPromises)
+            columns.forEach(column => {
+                columnsContainer.appendChild(column)
+            })
+        }
         initializeColumns();
+
 
     </script>
 

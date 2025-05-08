@@ -60,10 +60,14 @@ const pokemonPerColumn = Math.ceil((screenHeight * 2) / spriteHeight)
 const getRandomPokemonId = () => Math.floor(Math.random() * 1025) + 1
 
 async function createPokemonSprite(pokemonId) {
-    const sprite = document.createElement('img')
-    sprite.className = 'pokemon-sprite'
-    sprite.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemonId}.png`
-    return sprite
+    return new Promise((resolve, reject) => {
+        const sprite = document.createElement('img')
+        sprite.className = 'pokemon-sprite'
+        sprite.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemonId}.png`
+        
+        sprite.onload = () => resolve(sprite)
+        sprite.onerror = () => reject(new Error(`Failed to load Pokemon #${pokemonId}`))
+    })
 }
 
 async function createPokemonColumn() {
@@ -73,25 +77,36 @@ async function createPokemonColumn() {
     const sprites = []
     for (let i = 0; i < pokemonPerColumn; i++) {
         const pokemonId = getRandomPokemonId()
-        const sprite = await createPokemonSprite(pokemonId)
-        sprites.push(sprite)
+        try {
+            const sprite = await createPokemonSprite(pokemonId)
+            sprites.push(sprite)
+        } catch (error) {
+            console.log(error.message) 
+        }
     }
     
-    sprites.forEach(sprite => {
-        column.appendChild(sprite)
-    })
-    sprites.forEach(sprite => {
-        column.appendChild(sprite.cloneNode(true))
-    })
+    if (sprites.length > 0) {
+        sprites.forEach(sprite => {
+            column.appendChild(sprite)
+        })
+        sprites.forEach(sprite => {
+            column.appendChild(sprite.cloneNode(true))
+        })
+    }
     
     return column
 }
 
 async function initializeColumns() {
+    const columnPromises = []
     for (let i = 0; i < numberOfColumns; i++) {
-        const column = await createPokemonColumn()
-        columnsContainer.appendChild(column)
+        columnPromises.push(createPokemonColumn())
     }
+    
+    const columns = await Promise.all(columnPromises)
+    columns.forEach(column => {
+        columnsContainer.appendChild(column)
+    })
 }
 
 initializeColumns();
