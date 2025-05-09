@@ -5,10 +5,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pokémon | Inicio</title>
   <link rel="stylesheet" href="style.css">
+  <style>
+    .video-background {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+      z-index: -1;
+      pointer-events: none;
+    }
+  </style>
 </head>
 
 <div class="pokemon-columns" id="pokemonColumns"></div>
 <body id="body">
+  <video class="video-background" autoplay loop muted playsinline>
+    <source src="./assets/images/Background.mp4" type="video/mp4">
+    Tu navegador no soporta videos.
+  </video>
   <header>¡ Guess The Pokemon !</header>
   <div class="container">
     <div class="card-wrapper" id="container-1">
