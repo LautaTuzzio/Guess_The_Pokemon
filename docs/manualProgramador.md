@@ -1,5 +1,3 @@
-https://edusoftware.net.ar/multiplayer/game.html# Manual del Programador - Juego Web "Adivina el Pokémon"
-
 ## 1. Descripción General
 
 "Adivina el Pokémon" es un juego web interactivo donde los usuarios intentan adivinar un Pokémon oculto mediante intentos de nombres. El juego ofrece modos de un solo jugador y multijugador, proporcionando pistas basadas en las características del Pokémon ingresado cada cierto número de intentos.
