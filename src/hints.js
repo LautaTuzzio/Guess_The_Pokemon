@@ -1,4 +1,5 @@
 import { showErrorToast } from './main.js';
+import { translateType, translateHint } from './translate.js';
 
 // Track the number of attempts
 let attemptCount = 0;
@@ -204,10 +205,13 @@ function updateTooltipContent(tooltip, hintIndex) {
             const type1 = pokemonData[2];
             const type2 = pokemonData[3] !== "None" ? pokemonData[3] : null;
             
-            let message = `Tipo: ${type1}`;
+            // Translate the type
+            const translatedType1 = translateType(type1);
+            let message = `Tipo: ${translatedType1.charAt(0).toUpperCase() + translatedType1.slice(1)}`;
             
             if (type2) {
-                message += ` / ${type2}`;
+                const translatedType2 = translateType(type2);
+                message += ` / ${translatedType2.charAt(0).toUpperCase() + translatedType2.slice(1)}`;
             }
             tooltip.textContent = message;
             break;

@@ -1,3 +1,5 @@
+import { translateUI } from './translate.js'
+
 // Maneja la navegacion por teclado en el dropdown
 function updateSelection(items, selectedIndex) {
     Array.from(items).forEach((item, index) => {
@@ -88,7 +90,7 @@ function initializeAutocomplete(input, dropdown, pokemonList, guessedPokemonArra
             // Establecer un timeout para evitar demasiadas solicitudes
             timeoutId = setTimeout(async () => {
                 // Mostrar indicador de carga
-                dropdown.innerHTML = '<div class="loading-item">Buscando Pokémon...</div>';
+                dropdown.innerHTML = `<div class="loading-item">${translateUI('Searching for Pokémon...')}</div>`;
                 dropdown.style.display = 'block';
                 
                 const matches = await fetchPokemonByPrefix(query);
@@ -125,6 +127,7 @@ function initializeAutocomplete(input, dropdown, pokemonList, guessedPokemonArra
                             
                             // Crear el span con el nombre
                             const nameSpan = document.createElement('span');
+                            // Keep Pokémon names in their original form
                             nameSpan.textContent = pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1);
                             
                             // Agregar elementos al item
@@ -147,7 +150,7 @@ function initializeAutocomplete(input, dropdown, pokemonList, guessedPokemonArra
 
                     dropdown.style.display = 'block';
                 } else {
-                    dropdown.innerHTML = '<div class="no-results">No se encontraron Pokémons con ese nombre</div>';
+                    dropdown.innerHTML = `<div class="no-results">${translateUI('No Pokémon found with that name')}</div>`;
                 }
             }, 300); // Debounce de 300ms para evitar demasiadas solicitudes mientras el usuario escribe
         }

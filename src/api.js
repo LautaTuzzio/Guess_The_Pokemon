@@ -1,4 +1,5 @@
 import { getGenerationNumber } from './utils.js'
+import { translatePokemonData } from './translate.js'
 
 // Fetch de todos los pokemons y pre-cargar las imagenes
 async function fetchAllPokemon(loadingProgress) {
@@ -30,9 +31,9 @@ async function fetchAllPokemon(loadingProgress) {
                     const progress = Math.floor((loaded / total) * 100)
 
                     if(progress <= 80) {
-                        loadingProgress.textContent = `${progress}%, Llamando a los Pokemons. `
+                        loadingProgress.textContent = `${progress}%, Calling the Pokemon. `
                     }else{
-                        loadingProgress.textContent = `${progress}%, Alistando a los Pokemons. `
+                        loadingProgress.textContent = `${progress}%, Preparing the Pokemon. `
                     }
                     
 
@@ -73,18 +74,24 @@ async function fetchPokemonData(pokemonName) {
         const speciesResponse = await fetch(pokemonData.species.url)
         const speciesData = await speciesResponse.json()
         
-        return {
+        const pokemonInfo = {
             id: pokemonData.id,
             name: pokemonData.name,
             sprite: pokemonData.sprites.front_default, 
             types: pokemonData.types.map(t => t.type.name),
+            originalTypes: pokemonData.types.map(t => t.type.name), // Store original types
             height: pokemonData.height / 10, // Convert to meters
             weight: pokemonData.weight / 10, // Convert to kg
             habitat: speciesData.habitat ? speciesData.habitat.name : 'unknown',
+            originalHabitat: speciesData.habitat ? speciesData.habitat.name : 'unknown', // Store original habitat
             color: speciesData.color ? speciesData.color.name : 'unknown',
+            originalColor: speciesData.color ? speciesData.color.name : 'unknown', // Store original color
             evolutionStage: await determineEvolutionStage(speciesData),
             generation: getGenerationNumber(speciesData.generation.name)
         }
+        
+        // Apply translations to the Pokemon data
+        return translatePokemonData(pokemonInfo)
     } catch (error) {
          throw error
     }

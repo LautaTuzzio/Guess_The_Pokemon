@@ -3,13 +3,14 @@ import { fetchPokemonData } from './api.js'
 import { initializeAutocomplete } from './autocomplete.js'
 import { createPokemonCard } from './ui.js'
 import { animatePokemonCard } from './animations.js'
+import { translateError, translateLoadingProgress } from './translate.js'
 
 // Función simplificada para mostrar mensajes de error como toasts
 export function showErrorToast(message) {
     // Crear el toast
     const errorToast = document.createElement('div');
     errorToast.className = 'error-notification';
-    errorToast.textContent = message;
+    errorToast.textContent = translateError(message);
     document.body.appendChild(errorToast);
     
     // Eliminar el toast después de 3 segundos (coincide con la duración de la animación)
@@ -39,7 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
     async function initializeApp() {
         // Simulamos una carga rápida
         for (let i = 0; i <= 100; i += 10) {
-            loadingProgress.textContent = `${i}%, Preparando el juego...`
+            loadingProgress.textContent = translateLoadingProgress(`${i}%, Preparando el juego...`)
             await new Promise(resolve => setTimeout(resolve, 100))
         }
         
@@ -62,18 +63,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 const pokemonName = input.value.trim().toLowerCase()
                 
                 if (!pokemonName) {
-                    showErrorToast('Por favor, ingresa un nombre de Pokémon')
+                    showErrorToast('Please enter a Pokémon name')
                     return
                 }
                 
                 // Verificar si el Pokémon ya ha sido adivinado
                 if (window.guessedPokemon.includes(pokemonName)) {
-                    showErrorToast('Ya has adivinado este Pokémon. Intenta con otro.')
+                    showErrorToast('You already guessed this Pokémon. Try another.')
                     return
                 }
                 
                 errorMessage.textContent = ''
-                loadingIndicator.textContent = 'Loading...'
+                loadingIndicator.textContent = translateLoadingProgress('Loading...')
                 
                 try {
                     const pokemonData = await fetchPokemonData(pokemonName)

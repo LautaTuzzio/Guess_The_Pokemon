@@ -1,4 +1,5 @@
 import { getTextColorClass } from './utils.js'
+import { translateType, translateHabitat, translateColor, capitalize } from './translate.js'
 
 /**
  * Determines the appropriate text size class based on content length
@@ -39,11 +40,15 @@ function createPokemonCard(pokemon, pokemonListContainer) {
     
     // Crea la intro (imagen + nombre)
     const intro = document.createElement('div')
-    intro.className = 'pokemon-intro ' + pokemon.color
+    // Store the original color in a data attribute for comparison purposes
+    if (!pokemon.originalColor) {
+        pokemon.originalColor = pokemon.color;
+    }
+    intro.className = 'pokemon-intro ' + pokemon.originalColor
     intro.innerHTML = `
         <div class="intro-container">
             <div class="intro-image">
-                <img src="${pokemon.sprite}" alt="${capitalizedName}">
+                <img src="${pokemon.sprite}" alt="${capitalizedName}" onerror="this.onerror=null; this.src='../assets/images/Pokebola.png'; this.parentElement.classList.add('fallback-img');">
             </div>
             <div class="intro-name ${textColorClass}">${capitalizedName}</div>
         </div>
@@ -56,19 +61,19 @@ function createPokemonCard(pokemon, pokemonListContainer) {
     // Crea el contenedor de la imagen
     const imageContainer = document.createElement('div')
     imageContainer.className = 'pokemon-image'
-    imageContainer.innerHTML = `<img src="${pokemon.sprite}" alt="${capitalizedName}">`
+    imageContainer.innerHTML = `<img src="${pokemon.sprite}" alt="${capitalizedName}" onerror="this.onerror=null; this.src='../assets/images/Pokebola.png'; this.parentElement.classList.add('fallback-img');">`;
     
     // Crea el contenedor de la info
     const infoContainer = document.createElement('div')
     infoContainer.className = 'pokemon-info'
     
-    // Process types for display
-    const displayType1 = type1.charAt(0).toUpperCase() + type1.slice(1)
-    const displayType2 = type2 !== 'none' ? type2.charAt(0).toUpperCase() + type2.slice(1) : 'Ninguno'
-    const displayColor = pokemon.color.charAt(0).toUpperCase() + pokemon.color.slice(1)
-    const displayHabitat = pokemon.habitat.charAt(0).toUpperCase() + pokemon.habitat.slice(1)
+    // Process types for display and translate them
+    const displayType1 = capitalize(translateType(type1))
+    const displayType2 = type2 !== 'none' ? capitalize(translateType(type2)) : capitalize(translateType('none'))
+    const displayColor = capitalize(translateColor(pokemon.color))
+    const displayHabitat = capitalize(translateHabitat(pokemon.habitat))
     
-    // Define todas las celdas
+    // Define todas las celdas (already translated in the HTML)
     const cells = [
         { id: 'type1', text: displayType1, class: 'type1-cell', label: 'Tipo 1' },
         { id: 'type2', text: displayType2, class: 'type2-cell', label: 'Tipo 2' },

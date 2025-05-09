@@ -1,5 +1,6 @@
 import { fetchPokemonData } from './api.js'
 import { initializeHints, incrementAttempts, resetHints } from './hints.js';
+import { translateType, translateHabitat, translateColor } from './translate.js';
 
 async function getRandomPokemon() {
   const maxPokemon = 1025;
@@ -99,7 +100,8 @@ function comparar(pokemonRandom, pokeInfo){
   console.log("Guessed Pokemon:", pokeInfo);
   
   //comparacion de tipos
-  if (pokemonRandom[2] === pokeInfo.types[0]){
+  // First check for exact match (green)
+  if (pokemonRandom[2] === pokeInfo.types[0] || translateType(pokemonRandom[2]) === pokeInfo.types[0]){
     setTimeout(() => {
       const type1 = document.getElementById("type1");
       if (type1) {
@@ -108,7 +110,10 @@ function comparar(pokemonRandom, pokeInfo){
         console.error("Type1 element not found");
       }
     }, 100);
-  } else if (pokeInfo.types[1] && pokemonRandom[3] === pokeInfo.types[0]) {
+  } 
+  // Then check for partial match (yellow) - only if type1 is not already an exact match
+  else if (pokemonRandom[3] === pokeInfo.types[0] || translateType(pokemonRandom[3]) === pokeInfo.types[0]) {
+    // Yellow if type1 matches type2 of random pokemon
     setTimeout(() => {
       const type1 = document.getElementById("type1");
       if (type1) {
@@ -125,7 +130,8 @@ function comparar(pokemonRandom, pokeInfo){
   }
   
   //comparacion de tipo 2
-  if (pokemonRandom[3] === pokeInfo.types[1]){
+  // First check for exact match (green)
+  if (pokemonRandom[3] === pokeInfo.types[1] || translateType(pokemonRandom[3]) === pokeInfo.types[1]){
     setTimeout(() => {
       const type2 = document.getElementById("type2");
       if (type2) {
@@ -134,7 +140,10 @@ function comparar(pokemonRandom, pokeInfo){
         console.error("Type2 element not found");
       }
     }, 100);
-  } else if (pokeInfo.types[1] && pokemonRandom[2] === pokeInfo.types[1]) {
+  } 
+  // Then check for partial match (yellow) - only if type2 is not already an exact match
+  else if (pokemonRandom[2] === pokeInfo.types[1] || translateType(pokemonRandom[2]) === pokeInfo.types[1]) {
+    // Yellow if type2 matches type1 of random pokemon
     setTimeout(() => {
       const type2 = document.getElementById("type2");
       if (type2) {
@@ -146,7 +155,8 @@ function comparar(pokemonRandom, pokeInfo){
   }
 
   //comparacion de color
-  if (pokemonRandom[4].name === pokeInfo.color){
+  // Use original color values for comparison
+  if (pokemonRandom[4].name === pokeInfo.color || pokemonRandom[4].name === pokeInfo.originalColor){
     setTimeout(() => {
       const color = document.getElementById("color");
       if (color) {
@@ -194,7 +204,8 @@ function comparar(pokemonRandom, pokeInfo){
     }, 100);
   }
   
-  if(pokemonRandom[8] === pokeInfo.habitat){
+  // Use original habitat values for comparison
+  if(pokemonRandom[8] === pokeInfo.habitat || pokemonRandom[8] === pokeInfo.originalHabitat){
     setTimeout(() => {
       const habitat = document.getElementById("habitat");
       if (habitat) {
@@ -237,6 +248,8 @@ function comparar(pokemonRandom, pokeInfo){
           // Clear pokemon list
           const list = document.getElementById('pokemon-list');
           if (list) list.innerHTML = '';
+          // Reset guessed pokemon array
+          window.guessedPokemon = [];
           // Fetch new pokemon
           pokemonInfo = await getRandomPokemon();
           initializeHints(pokemonInfo);
