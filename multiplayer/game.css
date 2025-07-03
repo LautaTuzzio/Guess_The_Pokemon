@@ -16,8 +16,10 @@
 }
 
 body {
-    background-color: #f0f0f0;
+    background-color: transparent;
     padding: 20px;
+    min-height: 100vh;
+    position: relative;
 }
 
 .container {
@@ -415,7 +417,6 @@ h1 {
     display: flex;
     justify-content: space-around;
     overflow: hidden;
-    background: white;
     align-items: stretch !important;
 }
 

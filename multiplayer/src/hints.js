@@ -152,7 +152,7 @@ function setupHintListeners() {
                     }
                     
                     // Abrir esta Pokebola
-                    hintImg.src = '/assets/images/pokebola-abierta.png';
+                    hintImg.src = '/assets/images/Pokebola-abierta.png';
                     
                     // Actualizar la referencia de la Pokebola actualmente abierta
                     openedPokeball = hintImg;

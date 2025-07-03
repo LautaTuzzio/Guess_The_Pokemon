@@ -7,9 +7,26 @@
     <title>Pokémon | Partida Multijugador</title>
     <link rel="stylesheet" href="./game.css">
     <link rel="stylesheet" href="https://unpkg.com/intro.js/minified/introjs.min.css">
+
+    <style>
+        .video-background {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100vw;
+          height: 100vh;
+          object-fit: cover;
+          z-index: -1;
+          pointer-events: none;
+        }
+      </style>
 </head>
 
 <body>
+    <video class="video-background" autoplay loop muted playsinline>
+        <source src="../assets/images/Background.mp4" type="video/mp4">
+        Tu navegador no soporta videos.
+      </video>
 
     <button id="how-to-play" class="how-to-play-btn">¿Cómo jugar?</button>
 
